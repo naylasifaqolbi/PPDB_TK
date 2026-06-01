@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:ppdb_tk/views/register_page.dart';
 import 'form_pendaftaran_page.dart';
 import 'jadwal_page.dart';
 import 'kontak_page.dart';
 import 'lokasi_page.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final bool isGuest;
+  const HomePage({super.key,this.isGuest = false,});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +90,7 @@ class HomePage extends StatelessWidget {
                   Positioned(
                     left: 20,
                     bottom: 15,
-                    child: Image.asset('assets/images/anak.png', width: 155),
+                    child: Image.asset('assets/images/anak.png', width: 165),
                   ),
 
                   Positioned(
@@ -115,7 +117,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
 
             const Text(
               'Tahun Ajaran 2026/2027',
@@ -132,12 +134,29 @@ class HomePage extends StatelessWidget {
                 height: 46,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FormPendaftaranPage(),
-                      ),
-                    );
+                    if (isGuest) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Silakan registrasi terlebih dahulu untuk mendaftar.',
+                          ),
+                        ),
+                      );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const FormPendaftaranPage(),
+                        ),
+                      );
+                    }
                   },
 
                   style: ElevatedButton.styleFrom(
@@ -206,7 +225,9 @@ class HomePage extends StatelessWidget {
                   HomeMenu(
                     icon: Icons.check_circle,
                     title: 'Status',
-                    onTap: () {},
+                    onTap: () { 
+                      Navigator.pushNamed(context, '/status');
+                    },
                   ),
 
                   // KONTAK

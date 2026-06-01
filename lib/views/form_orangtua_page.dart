@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'konfirmasi_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FormOrangTuaPage extends StatefulWidget {
-  const FormOrangTuaPage({super.key});
+  final String namaAnak;
+   const FormOrangTuaPage({super.key, required this.namaAnak});
 
   @override
   State<FormOrangTuaPage> createState() => _FormOrangTuaPageState();
@@ -131,7 +133,7 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                       const SizedBox(height: 8),
 
                       DropdownButtonFormField<String>(
-                        value: selectedReligion,
+                        initialValue: selectedReligion,
 
                         decoration: inputDecoration(),
 
@@ -227,7 +229,20 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          
+                          final prefs = await SharedPreferences.getInstance();
+                          
+                          const noPendaftaran = 'PPDB-2026-001';
+
+                          await prefs.setBool('sudah_mendaftar', true);
+                          await prefs.setString('no_pendaftaran', noPendaftaran);
+                          await prefs.setString('nama_anak', widget.namaAnak);
+                          await prefs.setString('status', 'Menunggu Verifikasi');
+  
+
+                          if (!mounted) return;
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -235,7 +250,7 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                             ),
                           );
                         },
-
+                        
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1D944B),
 
