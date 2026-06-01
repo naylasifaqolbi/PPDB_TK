@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import 'home_page.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
@@ -159,12 +160,19 @@ class LandingPage extends StatelessWidget {
                 const SizedBox(height: 15),
 
                 // Tombol lihat info
-                // Tombol Lihat Info (lebih kecil)
                 SizedBox(
                   width: 180,
                   height: 48,
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const HomePage(isGuest: true),
+                        ),
+                      );
+                    },
 
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(

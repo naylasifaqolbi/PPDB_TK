@@ -12,6 +12,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
   String gender = 'Laki-laki';
   String? selectedReligion;
 
+final TextEditingController namaController = TextEditingController();
   final List<String> religions = [
     'Islam',
     'Kristen',
@@ -119,7 +120,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
 
                       const SizedBox(height: 20),
 
-                      buildField('Nama Lengkap'),
+                      buildField('Nama Lengkap', controller: namaController),
 
                       buildField('Nama Panggilan'),
 
@@ -172,7 +173,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                       const SizedBox(height: 8),
 
                       DropdownButtonFormField<String>(
-                        value: selectedReligion,
+                        initialValue: selectedReligion,
 
                         decoration: inputDecoration(),
 
@@ -252,14 +253,15 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          String namaAnak = namaController.text; // <-- ambil nama anak
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const FormOrangTuaPage(),
+                              builder: (context) => FormOrangTuaPage(namaAnak: namaAnak), // <-- pass namaAnak
                             ),
                           );
-                        },
+                          },
 
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1D944B),
@@ -348,21 +350,23 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
     );
   }
 
-  Widget buildField(String label, {int maxLines = 1}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-
-          const SizedBox(height: 8),
-
-          TextField(maxLines: maxLines, decoration: inputDecoration()),
-        ],
-      ),
-    );
-  }
+  Widget buildField(String label, {TextEditingController? controller, int maxLines = 1}) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          decoration: inputDecoration(),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget buildUploadBox(String title) {
     return Container(

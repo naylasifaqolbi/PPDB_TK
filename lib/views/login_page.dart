@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
 
                           child: const Text(
-                            'Registrasi disini',
+                            'Daftar disini',
                             style: TextStyle(
                               color: Color(0xFF1D944B),
                               fontWeight: FontWeight.bold,

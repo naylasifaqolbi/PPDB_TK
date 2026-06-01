@@ -165,96 +165,124 @@ class PendaftaranBerhasilPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(28),
                 ),
 
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                child: Stack(
                   children: [
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 70,
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    const Text(
-                      'Pendaftaran\nBerhasil',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1D944B),
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    const Text(
-                      'Data pendaftaran Anda telah berhasil dikirim',
-                      textAlign: TextAlign.center,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    const Text(
-                      'Nomor Pendaftaran',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
-
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEAF7EF),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-
-                      child: const Text(
-                        'PPDB-2026-001',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1D944B),
+                    Positioned(
+                      right: -8,
+                      top: -8,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.black54,
                         ),
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/home',
+                            (route) => false,
+                          );
+                        },
                       ),
                     ),
 
-                    const SizedBox(height: 18),
-
-                    const Text(
-                      'Harap simpan nomor pendaftaran ini untuk cek status',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: () {},
-
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1D944B),
-
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 70,
                           ),
-                        ),
 
-                        child: const Text(
-                          'Lihat Status',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                          const SizedBox(height: 18),
+
+                          const Text(
+                            'Pendaftaran\nBerhasil',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1D944B),
+                            ),
                           ),
-                        ),
+
+                          const SizedBox(height: 12),
+
+                          const Text(
+                            'Data pendaftaran Anda telah berhasil dikirim',
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          const Text(
+                            'Nomor Pendaftaran',
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEAF7EF),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+
+                            child: const Text(
+                              'PPDB-2026-001',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1D944B),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          const Text(
+                            'Harap simpan nomor pendaftaran ini untuk cek status',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 13),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(
+                                    context, '/status');
+                              },
+
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF1D944B),
+
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+
+                              child: const Text(
+                                'Lihat Status',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
