@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../core/database_helper.dart';
 
 class StatusViewModel extends ChangeNotifier {
   String? noPendaftaran;
@@ -21,24 +22,29 @@ class StatusViewModel extends ChangeNotifier {
 
     final sudahMendaftar = prefs.getBool('sudah_mendaftar') ?? false;
 
-    isRegistered = sudahMendaftar ||
-        (noPendaftaran != null && noPendaftaran!.isNotEmpty);
+    isRegistered =
+        sudahMendaftar || (noPendaftaran != null && noPendaftaran!.isNotEmpty);
 
     isLoading = false;
     notifyListeners();
   }
 
-  void cekStatus(String inputNo) {
+  Future<void> cekStatus(String inputNo) async {
     final input = inputNo.trim();
-    final nomorTersimpan = noPendaftaran?.trim();
 
     if (input.isEmpty) {
       isChecked = false;
       message = 'Nomor pendaftaran harus diisi';
-    } else if (nomorTersimpan != null &&
-        nomorTersimpan.isNotEmpty &&
-        input == nomorTersimpan) {
+      notifyListeners();
+      return;
+    }
+
+    final result = await DatabaseHelper.instance.getPendaftaranByNo(input);
+
+    if (result.isNotEmpty) {
       isChecked = true;
+      statusPendaftaran = result.first['status'];
+      namaAnak = result.first['nama_anak'];
       message = '';
     } else {
       isChecked = false;
