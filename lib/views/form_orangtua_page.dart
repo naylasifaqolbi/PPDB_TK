@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'konfirmasi_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../core/database_helper.dart';
 
 class FormOrangTuaPage extends StatefulWidget {
   final String namaAnak;
-   const FormOrangTuaPage({super.key, required this.namaAnak});
+  const FormOrangTuaPage({super.key, required this.namaAnak});
 
   @override
   State<FormOrangTuaPage> createState() => _FormOrangTuaPageState();
@@ -12,6 +13,16 @@ class FormOrangTuaPage extends StatefulWidget {
 
 class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
   String? selectedReligion;
+
+  final TextEditingController namaOrtuController = TextEditingController();
+
+  final TextEditingController ttlOrtuController = TextEditingController();
+
+  final TextEditingController alamatOrtuController = TextEditingController();
+
+  final TextEditingController pekerjaanController = TextEditingController();
+
+  final TextEditingController noTlpController = TextEditingController();
 
   final List<String> religions = [
     'Islam',
@@ -119,11 +130,21 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
 
                       const SizedBox(height: 20),
 
-                      buildField('Nama Lengkap Orang Tua'),
+                      buildField(
+                        'Nama Lengkap Orang Tua',
+                        controller: namaOrtuController,
+                      ),
 
-                      buildField('Tempat & Tanggal Lahir'),
+                      buildField(
+                        'Tempat & Tanggal Lahir',
+                        controller: ttlOrtuController,
+                      ),
 
-                      buildField('Alamat Lengkap', maxLines: 3),
+                      buildField(
+                        'Alamat Lengkap',
+                        controller: alamatOrtuController,
+                        maxLines: 3,
+                      ),
 
                       const Text(
                         'Agama',
@@ -155,7 +176,9 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
 
                       const SizedBox(height: 16),
 
-                      buildField('Pekerjaan'),
+                      buildField('Nomor Telepon', controller: noTlpController),
+
+                      buildField('Pekerjaan', controller: pekerjaanController),
                     ],
                   ),
                 ),
@@ -230,16 +253,60 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                       height: 52,
                       child: ElevatedButton(
                         onPressed: () async {
-                          
+                          if (namaOrtuController.text.trim().isEmpty ||
+                              ttlOrtuController.text.trim().isEmpty ||
+                              alamatOrtuController.text.trim().isEmpty ||
+                              pekerjaanController.text.trim().isEmpty ||
+                              noTlpController.text.trim().isEmpty ||
+                              selectedReligion == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Mohon lengkapi seluruh data orang tua',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // kode lama tetap
                           final prefs = await SharedPreferences.getInstance();
-                          
-                          const noPendaftaran = 'PPDB-2026-001';
 
                           await prefs.setBool('sudah_mendaftar', true);
-                          await prefs.setString('no_pendaftaran', noPendaftaran);
-                          await prefs.setString('nama_anak', widget.namaAnak);
-                          await prefs.setString('status', 'Menunggu Verifikasi');
-  
+
+                          await prefs.setString(
+                            'status',
+                            'Menunggu Verifikasi',
+                          );
+                          await prefs.setString(
+                            'nama_ortu',
+                            namaOrtuController.text,
+                          );
+
+                          await prefs.setString(
+                            'ttl_ortu',
+                            ttlOrtuController.text,
+                          );
+
+                          await prefs.setString(
+                            'alamat_ortu',
+                            alamatOrtuController.text,
+                          );
+
+                          await prefs.setString(
+                            'agama_ortu',
+                            selectedReligion ?? '',
+                          );
+
+                          await prefs.setString(
+                            'pekerjaan_ortu',
+                            pekerjaanController.text,
+                          );
+
+                          await prefs.setString(
+                            'no_tlp_ortu',
+                            noTlpController.text,
+                          );
 
                           if (!mounted) return;
 
@@ -250,7 +317,7 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                             ),
                           );
                         },
-                        
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1D944B),
 
@@ -324,7 +391,11 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
     );
   }
 
-  Widget buildField(String label, {int maxLines = 1}) {
+  Widget buildField(
+    String label, {
+    TextEditingController? controller,
+    int maxLines = 1,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -334,7 +405,11 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
 
           const SizedBox(height: 8),
 
-          TextField(maxLines: maxLines, decoration: inputDecoration()),
+          TextField(
+            controller: controller,
+            maxLines: maxLines,
+            decoration: inputDecoration(),
+          ),
         ],
       ),
     );

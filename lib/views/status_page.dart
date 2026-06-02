@@ -209,7 +209,7 @@ class _StatusPageState extends State<StatusPage> {
                                       borderRadius: BorderRadius.circular(22),
                                     ),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (noController.text.trim().isEmpty) {
                                       setState(() {
                                         cekResult =
@@ -218,11 +218,13 @@ class _StatusPageState extends State<StatusPage> {
                                       return;
                                     }
 
-                                    vm.cekStatus(noController.text.trim());
+                                    await vm.cekStatus(
+                                      noController.text.trim(),
+                                    );
 
                                     setState(() {
                                       cekResult = vm.isChecked
-                                          ? vm.statusPendaftaran ?? ''
+                                          ? 'Nama: ${vm.namaAnak}\nStatus: ${vm.statusPendaftaran}'
                                           : vm.message;
                                     });
                                   },

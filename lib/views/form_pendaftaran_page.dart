@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'form_orangtua_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../core/database_helper.dart';
 
 class FormPendaftaranPage extends StatefulWidget {
   const FormPendaftaranPage({super.key});
@@ -12,7 +14,15 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
   String gender = 'Laki-laki';
   String? selectedReligion;
 
-final TextEditingController namaController = TextEditingController();
+  final TextEditingController namaController = TextEditingController();
+
+  final TextEditingController namaPanggilanController = TextEditingController();
+
+  final TextEditingController ttlController = TextEditingController();
+
+  final TextEditingController nikController = TextEditingController();
+
+  final TextEditingController alamatController = TextEditingController();
   final List<String> religions = [
     'Islam',
     'Kristen',
@@ -122,7 +132,10 @@ final TextEditingController namaController = TextEditingController();
 
                       buildField('Nama Lengkap', controller: namaController),
 
-                      buildField('Nama Panggilan'),
+                      buildField(
+                        'Nama Panggilan',
+                        controller: namaPanggilanController,
+                      ),
 
                       const Text(
                         'Jenis Kelamin',
@@ -159,11 +172,18 @@ final TextEditingController namaController = TextEditingController();
                         ],
                       ),
 
-                      buildField('Tempat & Tanggal Lahir'),
+                      buildField(
+                        'Tempat & Tanggal Lahir',
+                        controller: ttlController,
+                      ),
 
-                      buildField('NIK Anak'),
+                      buildField('NIK Anak', controller: nikController),
 
-                      buildField('Alamat', maxLines: 3),
+                      buildField(
+                        'Alamat',
+                        controller: alamatController,
+                        maxLines: 3,
+                      ),
 
                       const Text(
                         'Agama',
@@ -254,14 +274,107 @@ final TextEditingController namaController = TextEditingController();
                       height: 52,
                       child: ElevatedButton(
                         onPressed: () async {
-                          String namaAnak = namaController.text; // <-- ambil nama anak
+                          if (namaController.text.trim().isEmpty ||
+                              namaPanggilanController.text.trim().isEmpty ||
+                              ttlController.text.trim().isEmpty ||
+                              nikController.text.trim().isEmpty ||
+                              alamatController.text.trim().isEmpty ||
+                              selectedReligion == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Mohon lengkapi seluruh data siswa',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (nikController.text.trim().length != 16 ||
+                              int.tryParse(nikController.text.trim()) == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('NIK harus 16 digit angka'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // kode lama tetap
+                          final prefs = await SharedPreferences.getInstance();
+
+                          int nomorUrut = prefs.getInt('nomor_urut') ?? 0;
+
+                          nomorUrut++;
+
+                          await prefs.setInt('nomor_urut', nomorUrut);
+
+                          final noPendaftaran =
+                              'PPDB-2026-${nomorUrut.toString().padLeft(3, '0')}';
+                          final data = {
+                            'no_pendaftaran': noPendaftaran,
+                            'nama_anak': namaController.text,
+                            'nama_panggilan': namaPanggilanController.text,
+                            'jenis_kelamin': gender,
+                            'ttl_anak': ttlController.text,
+                            'nik_anak': nikController.text,
+                            'alamat_anak': alamatController.text,
+                            'agama_anak': selectedReligion ?? '',
+                            'nama_ortu': '',
+                            'ttl_ortu': '',
+                            'alamat_ortu': '',
+                            'agama_ortu': '',
+                            'pekerjaan_ortu': '',
+                            'status': 'Menunggu Verifikasi',
+                          };
+
+                          final id = await DatabaseHelper.instance
+                              .insertPendaftaran(data);
+
+                          await prefs.setString(
+                            'no_pendaftaran',
+                            noPendaftaran,
+                          );
+
+                          await prefs.setString(
+                            'nama_anak',
+                            namaController.text,
+                          );
+
+                          await prefs.setString(
+                            'nama_panggilan',
+                            namaPanggilanController.text,
+                          );
+
+                          await prefs.setString('jenis_kelamin', gender);
+
+                          await prefs.setString('ttl_anak', ttlController.text);
+
+                          await prefs.setString('nik_anak', nikController.text);
+
+                          await prefs.setString(
+                            'alamat_anak',
+                            alamatController.text,
+                          );
+
+                          await prefs.setString(
+                            'agama_anak',
+                            selectedReligion ?? '',
+                          );
+
+                          print('Data tersimpan dengan ID: $id');
+
+                          if (!mounted) return;
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FormOrangTuaPage(namaAnak: namaAnak), // <-- pass namaAnak
+                              builder: (context) => FormOrangTuaPage(
+                                namaAnak: namaController.text,
+                              ),
                             ),
                           );
-                          },
+                        },
 
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1D944B),
@@ -350,23 +463,27 @@ final TextEditingController namaController = TextEditingController();
     );
   }
 
-  Widget buildField(String label, {TextEditingController? controller, int maxLines = 1}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          maxLines: maxLines,
-          decoration: inputDecoration(),
-        ),
-      ],
-    ),
-  );
-}
+  Widget buildField(
+    String label, {
+    TextEditingController? controller,
+    int maxLines = 1,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          TextField(
+            controller: controller,
+            maxLines: maxLines,
+            decoration: inputDecoration(),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget buildUploadBox(String title) {
     return Container(

@@ -1,8 +1,54 @@
 import 'package:flutter/material.dart';
 import 'pendaftaran_berhasil_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class KonfirmasiPage extends StatelessWidget {
+class KonfirmasiPage extends StatefulWidget {
   const KonfirmasiPage({super.key});
+
+  @override
+  State<KonfirmasiPage> createState() => _KonfirmasiPageState();
+}
+
+class _KonfirmasiPageState extends State<KonfirmasiPage> {
+  String namaAnak = '';
+  String jenisKelamin = '';
+  String ttlAnak = '';
+  String nikAnak = '';
+  String alamatAnak = '';
+  String agamaAnak = '';
+
+  String namaOrtu = '';
+  String ttlOrtu = '';
+  String alamatOrtu = '';
+  String agamaOrtu = '';
+  String pekerjaanOrtu = '';
+  String noTlpOrtu = '';
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      namaAnak = prefs.getString('nama_anak') ?? '';
+      jenisKelamin = prefs.getString('jenis_kelamin') ?? '';
+      ttlAnak = prefs.getString('ttl_anak') ?? '';
+      nikAnak = prefs.getString('nik_anak') ?? '';
+      alamatAnak = prefs.getString('alamat_anak') ?? '';
+      agamaAnak = prefs.getString('agama_anak') ?? '';
+
+      namaOrtu = prefs.getString('nama_ortu') ?? '';
+      ttlOrtu = prefs.getString('ttl_ortu') ?? '';
+      alamatOrtu = prefs.getString('alamat_ortu') ?? '';
+      agamaOrtu = prefs.getString('agama_ortu') ?? '';
+      pekerjaanOrtu = prefs.getString('pekerjaan_ortu') ?? '';
+      noTlpOrtu = prefs.getString('no_tlp_ortu') ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,26 +124,20 @@ class KonfirmasiPage extends StatelessWidget {
               // DATA ANAK
               buildCard(
                 title: 'Data Anak',
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InfoText(
-                      title: 'Nama',
-                      value: 'Aulia Sasmita Prameswari (Mita)',
-                    ),
+                    InfoText(title: 'Nama', value: namaAnak),
 
-                    InfoText(title: 'Jenis Kelamin', value: 'Perempuan'),
+                    InfoText(title: 'Jenis Kelamin', value: jenisKelamin),
 
-                    InfoText(title: 'TTL', value: 'Malang, 20 Oktober 2017'),
+                    InfoText(title: 'TTL', value: ttlAnak),
 
-                    InfoText(title: 'NIK', value: '1234567887654321'),
+                    InfoText(title: 'NIK', value: nikAnak),
 
-                    InfoText(
-                      title: 'Alamat',
-                      value: 'Jl. Mangga RT.11/RW.01 Gresik',
-                    ),
+                    InfoText(title: 'Alamat', value: alamatAnak),
 
-                    InfoText(title: 'Agama', value: 'Islam'),
+                    InfoText(title: 'Agama', value: agamaAnak),
                   ],
                 ),
               ),
@@ -107,23 +147,20 @@ class KonfirmasiPage extends StatelessWidget {
               // DATA ORTU
               buildCard(
                 title: 'Data Orang Tua',
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InfoText(title: 'Nama', value: 'Hendry Pratama'),
+                    InfoText(title: 'Nama', value: namaOrtu),
 
-                    InfoText(title: 'TTL', value: 'Surabaya, 13 Februari 1996'),
+                    InfoText(title: 'TTL', value: ttlOrtu),
 
-                    InfoText(
-                      title: 'Alamat',
-                      value: 'Jl. Raya Manyar No.27, Gresik',
-                    ),
+                    InfoText(title: 'Alamat', value: alamatOrtu),
 
-                    InfoText(title: 'Agama', value: 'Islam'),
+                    InfoText(title: 'Agama', value: agamaOrtu),
 
-                    InfoText(title: 'Pekerjaan', value: 'Wiraswasta'),
+                    InfoText(title: 'Pekerjaan', value: pekerjaanOrtu),
 
-                    InfoText(title: 'No. Tlp', value: '0812 3456 7890'),
+                    InfoText(title: 'No. Tlp', value: noTlpOrtu),
                   ],
                 ),
               ),

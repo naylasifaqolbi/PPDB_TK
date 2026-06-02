@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class PendaftaranBerhasilPage extends StatelessWidget {
+class PendaftaranBerhasilPage extends StatefulWidget {
   const PendaftaranBerhasilPage({super.key});
+
+  @override
+  State<PendaftaranBerhasilPage> createState() =>
+      _PendaftaranBerhasilPageState();
+}
+
+class _PendaftaranBerhasilPageState extends State<PendaftaranBerhasilPage> {
+  String noPendaftaran = '';
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      noPendaftaran = prefs.getString('no_pendaftaran') ?? '-';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,10 +194,7 @@ class PendaftaranBerhasilPage extends StatelessWidget {
                       right: -8,
                       top: -8,
                       child: IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.black54,
-                        ),
+                        icon: const Icon(Icons.close, color: Colors.black54),
                         onPressed: () {
                           Navigator.pushNamedAndRemoveUntil(
                             context,
@@ -235,8 +255,8 @@ class PendaftaranBerhasilPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
 
-                            child: const Text(
-                              'PPDB-2026-001',
+                            child: Text(
+                              noPendaftaran,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -261,7 +281,9 @@ class PendaftaranBerhasilPage extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 Navigator.pushReplacementNamed(
-                                    context, '/status');
+                                  context,
+                                  '/status',
+                                );
                               },
 
                               style: ElevatedButton.styleFrom(
