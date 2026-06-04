@@ -24,6 +24,13 @@ class _KonfirmasiPageState extends State<KonfirmasiPage> {
   String pekerjaanOrtu = '';
   String noTlpOrtu = '';
 
+  String kkFile = '';
+  String aktaFile = '';
+  String fotoFile = '';
+
+  String kkOrtuFile = '';
+  String ktpOrtuFile = '';
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +54,13 @@ class _KonfirmasiPageState extends State<KonfirmasiPage> {
       agamaOrtu = prefs.getString('agama_ortu') ?? '';
       pekerjaanOrtu = prefs.getString('pekerjaan_ortu') ?? '';
       noTlpOrtu = prefs.getString('no_tlp_ortu') ?? '';
+
+      kkFile = prefs.getString('kk_file') ?? '';
+      aktaFile = prefs.getString('akta_file') ?? '';
+      fotoFile = prefs.getString('foto_file') ?? '';
+
+      kkOrtuFile = prefs.getString('kk_ortu_file') ?? '';
+      ktpOrtuFile = prefs.getString('ktp_ortu_file') ?? '';
     });
   }
 
@@ -170,15 +184,17 @@ class _KonfirmasiPageState extends State<KonfirmasiPage> {
               // BERKAS
               buildCard(
                 title: 'Berkas',
-                child: const Column(
+                child: Column(
                   children: [
-                    FileItem(fileName: 'kartukeluarga.pdf'),
+                    FileItem(fileName: kkFile),
 
-                    FileItem(fileName: 'akta_anak.pdf'),
+                    FileItem(fileName: aktaFile),
 
-                    FileItem(fileName: 'ktp_ortu.pdf'),
+                    FileItem(fileName: fotoFile),
 
-                    FileItem(fileName: 'pasfoto_3x4.jpg'),
+                    FileItem(fileName: kkOrtuFile),
+
+                    FileItem(fileName: ktpOrtuFile),
                   ],
                 ),
               ),

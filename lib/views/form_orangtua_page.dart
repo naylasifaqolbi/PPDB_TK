@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'konfirmasi_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/database_helper.dart';
+import 'package:file_picker/file_picker.dart';
 
 class FormOrangTuaPage extends StatefulWidget {
   final String namaAnak;
@@ -13,6 +14,9 @@ class FormOrangTuaPage extends StatefulWidget {
 
 class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
   String? selectedReligion;
+
+  String? kkOrtuFile;
+  String? ktpOrtuFile;
 
   final TextEditingController namaOrtuController = TextEditingController();
 
@@ -32,6 +36,22 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
     'Buddha',
     'Konghucu',
   ];
+
+  Future<void> pilihFile(String jenis) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        if (jenis == 'kk') {
+          kkOrtuFile = result.files.single.name;
+        }
+
+        if (jenis == 'ktp') {
+          ktpOrtuFile = result.files.single.name;
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,28 +234,17 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
 
                       const SizedBox(height: 18),
 
-                      buildUploadBox('Scan Kartu Keluarga (KK)'),
-
-                      const SizedBox(height: 16),
-
-                      buildUploadBox('Scan KTP Orang Tua'),
-
-                      const SizedBox(height: 16),
-
-                      Row(
-                        children: [
-                          const Icon(Icons.check_circle, color: Colors.green),
-
-                          const SizedBox(width: 8),
-
-                          Expanded(
-                            child: Text(
-                              'Data di atas sudah benar',
-                              style: TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
+                      buildUploadBox(
+                        'Scan Kartu Keluarga (KK)',
+                        'kk',
+                        kkOrtuFile,
                       ),
+
+                      const SizedBox(height: 16),
+
+                      buildUploadBox('Scan KTP Orang Tua', 'ktp', ktpOrtuFile),
+
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
@@ -264,6 +273,28 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                                 content: Text(
                                   'Mohon lengkapi seluruh data orang tua',
                                 ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (kkOrtuFile == null || ktpOrtuFile == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Dokumen KK dan KTP wajib diunggah',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (!RegExp(
+                            r'^[0-9]{10,15}$',
+                          ).hasMatch(noTlpController.text)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Nomor HP tidak valid'),
                               ),
                             );
                             return;
@@ -306,6 +337,16 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                           await prefs.setString(
                             'no_tlp_ortu',
                             noTlpController.text,
+                          );
+
+                          await prefs.setString(
+                            'kk_ortu_file',
+                            kkOrtuFile ?? '',
+                          );
+
+                          await prefs.setString(
+                            'ktp_ortu_file',
+                            ktpOrtuFile ?? '',
                           );
 
                           if (!mounted) return;
@@ -415,29 +456,51 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
     );
   }
 
-  Widget buildUploadBox(String title) {
+  Widget buildUploadBox(String title, String jenis, String? namaFile) {
     return Container(
       padding: const EdgeInsets.all(16),
+
       decoration: BoxDecoration(
         color: const Color(0xFFF6F6F6),
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Row(
+
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: Text(title)),
+          Row(
+            children: [
+              Expanded(child: Text(title)),
 
-          ElevatedButton(
-            onPressed: () {},
+              ElevatedButton(
+                onPressed: () {
+                  pilihFile(jenis);
+                },
 
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1D944B),
-            ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1D944B),
+                ),
 
-            child: const Text(
-              'Unggah File',
-              style: TextStyle(color: Colors.white),
-            ),
+                child: const Text(
+                  'Unggah File',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
           ),
+
+          if (namaFile != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '✓ $namaFile',
+                style: const TextStyle(
+                  color: Colors.green,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
         ],
       ),
     );
