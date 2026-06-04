@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'verifikasi_pendaftaran_page.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
@@ -225,7 +226,15 @@ class AdminHomePage extends StatelessWidget {
                     context,
                     title: 'Verifikasi Pendaftaran',
                     icon: Icons.verified_user,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const VerifikasiPendaftaranPage(),
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 16),
