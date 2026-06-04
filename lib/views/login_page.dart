@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'register_page.dart';
 import 'home_page.dart';
+import 'admin_login_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,7 +22,45 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+
+              // Login Admin kanan atas
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AdminLoginPage(),
+                          ),
+                        );
+                      },
+
+                      icon: const Icon(
+                        Icons.admin_panel_settings,
+                        size: 18,
+                        color: Color(0xFF1D944B),
+                      ),
+
+                      label: const Text(
+                        'Admin',
+                        style: TextStyle(
+                          color: Color(0xFF1D944B),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 2),
 
               // Judul
               const Text(
@@ -34,13 +73,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
 
               // Area ilustrasi
               SizedBox(
-                height: 220,
+                height: 180,
                 child: Stack(
                   alignment: Alignment.bottomCenter,
+
                   children: [
                     // Padang hijau
                     Positioned(
@@ -57,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       bottom: 10,
                       child: Image.asset(
                         'assets/images/anak_bahagia.png',
-                        width: 250,
+                        width: 230,
                       ),
                     ),
                   ],
@@ -66,10 +106,12 @@ class _LoginPageState extends State<LoginPage> {
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 28),
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 0),
 
                     // Judul form
                     const Text(
@@ -80,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 24),
 
                     // Email label
                     const Text(
@@ -108,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 20),
 
                     // Password label
                     const Text(
@@ -138,9 +180,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
 
-                    // Ingat saya
+                    // Ingat Saya
                     Row(
                       children: [
                         Checkbox(
@@ -159,12 +201,13 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
 
-                    // Tombol masuk
+                    // Tombol Masuk
                     SizedBox(
                       width: double.infinity,
                       height: 56,
+
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushReplacement(
@@ -194,16 +237,19 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
+                    const SizedBox(height: 6),
+
                     // Atau
                     const Center(
                       child: Text('Atau', style: TextStyle(fontSize: 16)),
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 4),
 
                     // Registrasi
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+
                       children: [
                         const Text('Belum punya akun?'),
 
@@ -217,6 +263,10 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           },
 
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                          ),
+
                           child: const Text(
                             'Daftar disini',
                             style: TextStyle(
@@ -228,7 +278,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
