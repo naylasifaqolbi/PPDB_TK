@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'admin_data_pendaftar_page.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
@@ -213,11 +214,18 @@ class AdminHomePage extends StatelessWidget {
               child: Column(
                 children: [
                   _menuButton(
-                    context,
-                    title: 'Lihat Data Pendaftar',
-                    icon: Icons.people_alt_rounded,
-                    onTap: () {},
-                  ),
+                  context,
+                  title: 'Lihat Data Pendaftar',
+                  icon: Icons.people_alt_rounded,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminDataPendaftarPage(),
+                      ),
+                    );
+                  },
+                ),
 
                   const SizedBox(height: 16),
 
