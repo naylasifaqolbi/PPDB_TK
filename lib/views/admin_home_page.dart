@@ -226,7 +226,6 @@ class AdminHomePage extends StatelessWidget {
                     );
                   },
                 ),
-
                   const SizedBox(height: 16),
 
                   _menuButton(
