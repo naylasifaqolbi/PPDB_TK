@@ -50,6 +50,16 @@ class DatabaseHelper {
     return await db.insert('pendaftaran', row);
   }
 
+  Future<int> updateStatus(String noPendaftaran, String status) async {
+    final db = await database;
+    return await db.update(
+      'pendaftaran',
+      {'status': status},
+      where: 'no_pendaftaran = ?',
+      whereArgs: [noPendaftaran],
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getPendaftaranByNo(
     String noPendaftaran,
   ) async {
@@ -60,5 +70,11 @@ class DatabaseHelper {
       where: 'no_pendaftaran = ?',
       whereArgs: [noPendaftaran],
     );
+  }
+
+  Future<List<Map<String, dynamic>>> getAllPendaftaran() async {
+    final db = await database;
+
+    return await db.query('pendaftaran', orderBy: 'id DESC');
   }
 }

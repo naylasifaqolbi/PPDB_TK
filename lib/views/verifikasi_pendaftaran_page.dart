@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'verifikasi_berhasil_page.dart';
+import '../core/database_helper.dart';
 
 class VerifikasiPendaftaranPage extends StatefulWidget {
   const VerifikasiPendaftaranPage({super.key});
@@ -10,12 +11,21 @@ class VerifikasiPendaftaranPage extends StatefulWidget {
 }
 
 class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
-  final List<Map<String, dynamic>> dataPendaftar = [
-    {'nama': 'Ahmad Rizki', 'status': ''},
-    {'nama': 'Siti Aisyah', 'status': ''},
-    {'nama': 'Budi Santoso', 'status': ''},
-    {'nama': 'Naila Putri', 'status': ''},
-  ];
+  List<Map<String, dynamic>> dataPendaftar = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final data = await DatabaseHelper.instance.getAllPendaftaran();
+
+    setState(() {
+      dataPendaftar = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +146,9 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
 
                         // DATA TABLE
                         ...List.generate(dataPendaftar.length, (index) {
-                          final status = dataPendaftar[index]['status'];
+                          final status =
+                              dataPendaftar[index]['status']?.toString() ??
+                              'Menunggu Verifikasi';
 
                           return TableRow(
                             children: [
@@ -152,14 +164,18 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
                               // NAMA
                               Padding(
                                 padding: const EdgeInsets.all(12),
-                                child: Text(dataPendaftar[index]['nama']),
+                                child: Text(
+                                  dataPendaftar[index]['nama_anak']
+                                          ?.toString() ??
+                                      '',
+                                ),
                               ),
 
                               // VERIFIKASI
                               Padding(
                                 padding: const EdgeInsets.all(8),
 
-                                child: status == ''
+                                child: status == 'Menunggu Verifikasi'
                                     // BELUM DIKLIK
                                     ? Column(
                                         children: [
@@ -167,11 +183,15 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
                                             width: double.infinity,
 
                                             child: ElevatedButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  dataPendaftar[index]['status'] =
-                                                      'diterima';
-                                                });
+                                              onPressed: () async {
+                                                await DatabaseHelper.instance
+                                                    .updateStatus(
+                                                      dataPendaftar[index]['no_pendaftaran']
+                                                          .toString(),
+                                                      'Diterima',
+                                                    );
+
+                                                loadData();
                                               },
 
                                               style: ElevatedButton.styleFrom(
@@ -203,11 +223,15 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
                                             width: double.infinity,
 
                                             child: ElevatedButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  dataPendaftar[index]['status'] =
-                                                      'ditolak';
-                                                });
+                                              onPressed: () async {
+                                                await DatabaseHelper.instance
+                                                    .updateStatus(
+                                                      dataPendaftar[index]['no_pendaftaran']
+                                                          .toString(),
+                                                      'Ditolak',
+                                                    );
+
+                                                loadData();
                                               },
 
                                               style: ElevatedButton.styleFrom(
@@ -239,10 +263,10 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
                                         child: Column(
                                           children: [
                                             Icon(
-                                              status == 'diterima'
+                                              status == 'Diterima'
                                                   ? Icons.check_circle
                                                   : Icons.cancel,
-                                              color: status == 'diterima'
+                                              color: status == 'Diterima'
                                                   ? Colors.green
                                                   : Colors.red,
                                               size: 35,
@@ -251,11 +275,11 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
                                             const SizedBox(height: 4),
 
                                             Text(
-                                              status == 'diterima'
+                                              status == 'Diterima'
                                                   ? 'Diterima'
                                                   : 'Ditolak',
                                               style: TextStyle(
-                                                color: status == 'diterima'
+                                                color: status == 'Diterima'
                                                     ? Colors.green
                                                     : Colors.red,
                                                 fontWeight: FontWeight.bold,
