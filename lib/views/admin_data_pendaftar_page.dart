@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
-import '../models/pendaftar_model.dart';
+import '../core/database_helper.dart';
 
-class AdminDataPendaftarPage extends StatelessWidget {
+class AdminDataPendaftarPage extends StatefulWidget {
   const AdminDataPendaftarPage({super.key});
 
-  // Dummy data pendaftar
-  final List<Pendaftar> pendaftarList = const [
-    Pendaftar(no: 1, nama: 'Azalia Sasmita', noPendaftaran: 'PPDB-2026-001'),
-    Pendaftar(no: 2, nama: 'Alfin Ramadhani', noPendaftaran: 'PPDB-2026-002'),
-    Pendaftar(no: 3, nama: 'Felicia Putri', noPendaftaran: 'PPDB-2026-003'),
-    Pendaftar(no: 4, nama: 'Nur Fatimah Azzahra', noPendaftaran: 'PPDB-2026-004'),
-    Pendaftar(no: 5, nama: 'Rio Fernando', noPendaftaran: 'PPDB-2026-005'),
-    Pendaftar(no: 6, nama: 'Widya Sari', noPendaftaran: 'PPDB-2026-006'),
-    Pendaftar(no: 7, nama: 'Yeni Faradilla', noPendaftaran: 'PPDB-2026-007'),
-  ];
+  @override
+  State<AdminDataPendaftarPage> createState() => _AdminDataPendaftarPageState();
+}
+
+class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
+  List<Map<String, dynamic>> pendaftarList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final data = await DatabaseHelper.instance.getAllPendaftaran();
+
+    setState(() {
+      pendaftarList = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +51,11 @@ class AdminDataPendaftarPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     children: [
-                      Image.asset('assets/images/logo.png', width: 40, height: 40),
+                      Image.asset(
+                        'assets/images/logo.png',
+                        width: 40,
+                        height: 40,
+                      ),
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
@@ -86,7 +100,9 @@ class AdminDataPendaftarPage extends StatelessWidget {
                                   child: Center(
                                     child: Text(
                                       'NO',
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -95,7 +111,9 @@ class AdminDataPendaftarPage extends StatelessWidget {
                                   child: Center(
                                     child: Text(
                                       'NAMA ANAK',
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -104,7 +122,9 @@ class AdminDataPendaftarPage extends StatelessWidget {
                                   child: Center(
                                     child: Text(
                                       'NO PENDAFTARAN',
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -117,28 +137,43 @@ class AdminDataPendaftarPage extends StatelessWidget {
                               padding: const EdgeInsets.all(0),
                               itemCount: pendaftarList.length,
                               separatorBuilder: (context, index) => Divider(
-                                  height: 1, color: Colors.grey.shade300),
+                                height: 1,
+                                color: Colors.grey.shade300,
+                              ),
                               itemBuilder: (context, index) {
                                 final item = pendaftarList[index];
                                 return Container(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 8),
+                                    vertical: 10,
+                                    horizontal: 8,
+                                  ),
                                   color: index % 2 == 0
                                       ? Colors.green[50]
                                       : Colors.white,
                                   child: Row(
                                     children: [
                                       Expanded(
-                                          flex: 1,
-                                          child:
-                                              Center(child: Text('${item.no}'))),
+                                        flex: 1,
+                                        child: Center(
+                                          child: Text('${index + 1}'),
+                                        ),
+                                      ),
+
                                       Expanded(
-                                          flex: 3,
-                                          child: Center(child: Text(item.nama))),
+                                        flex: 3,
+                                        child: Center(
+                                          child: Text(item['nama_anak'] ?? ''),
+                                        ),
+                                      ),
+
                                       Expanded(
-                                          flex: 2,
-                                          child: Center(
-                                              child: Text(item.noPendaftaran))),
+                                        flex: 2,
+                                        child: Center(
+                                          child: Text(
+                                            item['no_pendaftaran'] ?? '',
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 );
@@ -153,7 +188,10 @@ class AdminDataPendaftarPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 // Tombol kembali (lebih kecil)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   child: SizedBox(
                     width: double.infinity,
                     height: 42,
