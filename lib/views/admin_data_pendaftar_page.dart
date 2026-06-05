@@ -1,10 +1,10 @@
-// lib/views/admin_data_pendaftar_page.dart
 import 'package:flutter/material.dart';
 import '../models/pendaftar_model.dart';
 
 class AdminDataPendaftarPage extends StatelessWidget {
   const AdminDataPendaftarPage({super.key});
 
+  // Dummy data pendaftar
   final List<Pendaftar> pendaftarList = const [
     Pendaftar(no: 1, nama: 'Azalia Sasmita', noPendaftaran: 'PPDB-2026-001'),
     Pendaftar(no: 2, nama: 'Alfin Ramadhani', noPendaftaran: 'PPDB-2026-002'),
@@ -82,23 +82,32 @@ class AdminDataPendaftarPage extends StatelessWidget {
                             child: Row(
                               children: const [
                                 Expanded(
-                                    flex: 1,
-                                    child: Center(
-                                        child: Text('NO',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)))),
+                                  flex: 1,
+                                  child: Center(
+                                    child: Text(
+                                      'NO',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                                 Expanded(
-                                    flex: 3,
-                                    child: Center(
-                                        child: Text('NAMA ANAK',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)))),
+                                  flex: 3,
+                                  child: Center(
+                                    child: Text(
+                                      'NAMA ANAK',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                                 Expanded(
-                                    flex: 2,
-                                    child: Center(
-                                        child: Text('NOMOR PENDAFTARAN',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)))),
+                                  flex: 2,
+                                  child: Center(
+                                    child: Text(
+                                      'NO PENDAFTARAN',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),

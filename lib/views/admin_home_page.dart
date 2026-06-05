@@ -234,7 +234,15 @@ class AdminHomePage extends StatelessWidget {
                     context,
                     title: 'Verifikasi Pendaftaran',
                     icon: Icons.verified_user,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const VerifikasiPendaftaranPage(),
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 16),
