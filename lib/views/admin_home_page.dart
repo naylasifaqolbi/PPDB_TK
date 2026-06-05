@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'admin_data_pendaftar_page.dart';
+=======
+import 'verifikasi_pendaftaran_page.dart';
+import 'lihat_dokumen_page.dart';
+>>>>>>> c63c8f605c819635f02bb772ad76fb13d0ddf234
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
@@ -241,7 +246,14 @@ class AdminHomePage extends StatelessWidget {
                     context,
                     title: 'Lihat Dokumen',
                     icon: Icons.folder_copy_rounded,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LihatDokumenPage(),
+                        ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 30),
