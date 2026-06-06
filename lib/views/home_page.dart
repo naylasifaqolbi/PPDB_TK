@@ -35,15 +35,20 @@ class HomePage extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.all(7),
+                          padding: const EdgeInsets.all(2),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(
-                            Icons.notifications,
-                            size: 18,
-                            color: Color(0xFF1D944B),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.logout,
+                              size: 20,
+                              color: Color(0xFF1D944B),
+                            ),
+                            onPressed: () {
+                              homeVM.logout(context);
+                            },
                           ),
                         ),
                       ],
