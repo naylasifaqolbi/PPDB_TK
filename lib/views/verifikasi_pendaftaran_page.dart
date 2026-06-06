@@ -167,6 +167,9 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
                                       padding: const EdgeInsets.all(12),
                                       child: Text(
                                         item['nama_anak']?.toString() ?? '',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
 

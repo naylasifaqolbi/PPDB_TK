@@ -14,6 +14,13 @@ class PendaftaranModel {
   final String alamatOrtu;
   final String agamaOrtu;
   final String pekerjaanOrtu;
+  final String noTlpOrtu;
+
+  final String kkFile;
+  final String aktaFile;
+  final String fotoFile;
+  final String kkOrtuFile;
+  final String ktpOrtuFile;
 
   final String nomorPendaftaran;
   final String status;
@@ -32,6 +39,12 @@ class PendaftaranModel {
     required this.alamatOrtu,
     required this.agamaOrtu,
     required this.pekerjaanOrtu,
+    required this.noTlpOrtu,
+    required this.kkFile,
+    required this.aktaFile,
+    required this.fotoFile,
+    required this.kkOrtuFile,
+    required this.ktpOrtuFile,
     required this.nomorPendaftaran,
     required this.status,
   });
@@ -51,6 +64,12 @@ class PendaftaranModel {
       'alamat_ortu': alamatOrtu,
       'agama_ortu': agamaOrtu,
       'pekerjaan_ortu': pekerjaanOrtu,
+      'no_tlp_ortu': noTlpOrtu,
+      'kk_file': kkFile,
+      'akta_file': aktaFile,
+      'foto_file': fotoFile,
+      'kk_ortu_file': kkOrtuFile,
+      'ktp_ortu_file': ktpOrtuFile,
       'no_pendaftaran': nomorPendaftaran,
       'status': status,
     };
@@ -71,6 +90,12 @@ class PendaftaranModel {
       alamatOrtu: map['alamat_ortu'] ?? '',
       agamaOrtu: map['agama_ortu'] ?? '',
       pekerjaanOrtu: map['pekerjaan_ortu'] ?? '',
+      noTlpOrtu: map['no_tlp_ortu'] ?? '',
+      kkFile: map['kk_file'] ?? '',
+      aktaFile: map['akta_file'] ?? '',
+      fotoFile: map['foto_file'] ?? '',
+      kkOrtuFile: map['kk_ortu_file'] ?? '',
+      ktpOrtuFile: map['ktp_ortu_file'] ?? '',
       nomorPendaftaran: map['no_pendaftaran'] ?? '',
       status: map['status'] ?? '',
     );

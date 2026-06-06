@@ -41,15 +41,15 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
     if (result != null) {
       setState(() {
         if (jenis == 'kk') {
-          kkFile = result.files.single.name;
+          kkFile = result.files.single.path;
         }
 
         if (jenis == 'akta') {
-          aktaFile = result.files.single.name;
+          aktaFile = result.files.single.path;
         }
 
         if (jenis == 'foto') {
-          fotoFile = result.files.single.name;
+          fotoFile = result.files.single.path;
         }
       });
     }
@@ -344,11 +344,20 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                             nikAnak: nikController.text.trim(),
                             alamatAnak: alamatController.text.trim(),
                             agamaAnak: selectedReligion ?? '',
+
                             namaOrtu: '',
                             ttlOrtu: '',
                             alamatOrtu: '',
                             agamaOrtu: '',
                             pekerjaanOrtu: '',
+                            noTlpOrtu: '',
+
+                            kkFile: kkFile ?? '',
+                            aktaFile: aktaFile ?? '',
+                            fotoFile: fotoFile ?? '',
+                            kkOrtuFile: '',
+                            ktpOrtuFile: '',
+
                             nomorPendaftaran: noPendaftaran,
                             status: 'Menunggu Verifikasi',
                           );
