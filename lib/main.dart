@@ -5,11 +5,18 @@ import 'views/splash_screen.dart';
 import 'views/home_page.dart';
 import 'views/login_page.dart';
 import 'views/status_page.dart';
+import 'views/register_page.dart';
+import 'views/form_pendaftaran_page.dart';
+import 'views/jadwal_page.dart';
+import 'views/lokasi_page.dart';
+import 'views/kontak_page.dart';
 
 import 'viewmodels/login_viewmodel.dart';
 import 'viewmodels/register_viewmodel.dart';
 import 'viewmodels/status_viewmodel.dart';
 import 'viewmodels/splash_viewmodel.dart';
+import 'viewmodels/landing_viewmodel.dart';
+import 'viewmodels/home_viewmodel.dart';
 
 import 'viewmodels/admin_login_viewmodel.dart';
 import 'viewmodels/admin_home_viewmodel.dart';
@@ -34,6 +41,10 @@ void main() {
         ChangeNotifierProvider(create: (_) => VerifikasiPendaftaranViewModel()),
         ChangeNotifierProvider(create: (_) => VerifikasiBerhasilViewModel()),
         ChangeNotifierProvider(create: (_) => LihatDokumenViewModel()),
+
+        // MVVM Landing & Home
+        ChangeNotifierProvider(create: (_) => LandingViewModel()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: const MyApp(),
     ),
@@ -51,8 +62,19 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
       routes: {
         '/login': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(),
+        '/home': (context) {
+          // Ambil argumen isGuest dari route
+          final args =
+              ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>? ?? {};
+          final isGuest = args['isGuest'] ?? false;
+          return HomePage(isGuest: isGuest);
+        },
         '/status': (context) => const StatusPage(),
+        '/register': (context) => const RegisterPage(),
+        '/form_pendaftaran': (context) => const FormPendaftaranPage(),
+        '/jadwal': (context) => const JadwalPage(),
+        '/lokasi': (context) => const LokasiPage(),
+        '/kontak': (context) => const KontakPage(),
       },
     );
   }
