@@ -41,6 +41,8 @@ class _KonfirmasiPageState extends State<KonfirmasiPage> {
   Future<void> loadData() async {
   final data = await pendaftaranViewModel.getDataKonfirmasi();
 
+  if (!mounted) return;
+
   setState(() {
     namaAnak = data['nama_anak'] ?? '';
     jenisKelamin = data['jenis_kelamin'] ?? '';

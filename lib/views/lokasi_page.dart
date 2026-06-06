@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import '../viewmodels/lokasi_viewmodel.dart';
 
 class LokasiPage extends StatelessWidget {
   const LokasiPage({super.key});
 
+  
   @override
   Widget build(BuildContext context) {
+    final LokasiViewModel lokasiViewModel = LokasiViewModel();
     return Scaffold(
       backgroundColor: const Color(0xFFEFFAFF),
 
       body: SafeArea(
         child: Stack(
           children: [
-            // =========================
-            // BACKGROUND (SEPERTI HOME/JADWAL)
-            // =========================
+          
+            // BACKGROUND
             Column(
               children: [
                 const SizedBox(height: 8),
@@ -147,14 +149,11 @@ class LokasiPage extends StatelessWidget {
               ],
             ),
 
-            // =========================
-            // OVERLAY GELAP
-            // =========================
+            
+            // OVERLAY 
             Container(color: Colors.black.withOpacity(0.45)),
 
-            // =========================
             // POPUP LOKASI
-            // =========================
             Center(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 28),
@@ -183,13 +182,13 @@ class LokasiPage extends StatelessWidget {
 
                     // ALAMAT
                     Row(
-                      children: const [
+                      children: [
                         Icon(Icons.location_on, color: Colors.red),
                         SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Perum Oma Indah Menganti',
-                            style: TextStyle(fontSize: 14),
+                            lokasiViewModel.alamatSekolah,
+                            style: const TextStyle(fontSize: 14),
                           ),
                         ),
                       ],
@@ -197,20 +196,36 @@ class LokasiPage extends StatelessWidget {
 
                     const SizedBox(height: 12),
 
-                    // MAPS BUTTON (dummy)
-                    Container(
+                    // MAPS BUTTON
+                    SizedBox(
                       width: double.infinity,
                       height: 45,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1D944B),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        'LIHAT DI MAPS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final berhasil = await lokasiViewModel.bukaGoogleMaps();
+
+                          if (!context.mounted) return;
+
+                          if (!berhasil) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Tidak dapat membuka Google Maps'),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1D944B),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'LIHAT DI MAPS',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
