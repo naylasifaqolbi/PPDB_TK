@@ -26,15 +26,6 @@ class AdminHomePage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-
-        actions: [
-          IconButton(
-            onPressed: () {
-              vm.logout(context);
-            },
-            icon: const Icon(Icons.logout, color: Color(0xFF1D944B)),
-          ),
-        ],
       ),
 
       body: SingleChildScrollView(
@@ -42,9 +33,7 @@ class AdminHomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
 
-            // ==========================
             // HEADER PALING ATAS
-            // ==========================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
 
@@ -65,21 +54,23 @@ class AdminHomePage extends StatelessWidget {
                   ),
 
                   Container(
-                    padding: const EdgeInsets.all(8),
-
+                    padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-
                       boxShadow: const [
                         BoxShadow(color: Colors.black12, blurRadius: 5),
                       ],
                     ),
-
-                    child: const Icon(
-                      Icons.notifications,
-                      size: 20,
-                      color: Color(0xFF1D944B),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.logout,
+                        size: 20,
+                        color: Color(0xFF1D944B),
+                      ),
+                      onPressed: () {
+                        vm.logout(context);
+                      },
                     ),
                   ),
                 ],
@@ -88,9 +79,7 @@ class AdminHomePage extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // ==========================
             // SAPAAN ADMIN
-            // ==========================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
 
@@ -127,9 +116,7 @@ class AdminHomePage extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // ==========================
-            // AWAN (MEPET PINGGIR)
-            // ==========================
+            // AWAN (PINGGIR)
             SizedBox(
               width: double.infinity,
 
@@ -152,9 +139,7 @@ class AdminHomePage extends StatelessWidget {
               ),
             ),
 
-            // ==========================
             // ILUSTRASI FULL WIDTH
-            // ==========================
             SizedBox(
               height: 170,
               width: double.infinity,
@@ -210,9 +195,7 @@ class AdminHomePage extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // ==========================
             // MENU NAVIGASI
-            // ==========================
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
 

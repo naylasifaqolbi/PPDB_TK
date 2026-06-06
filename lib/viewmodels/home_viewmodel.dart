@@ -51,7 +51,11 @@ class HomeViewModel extends ChangeNotifier {
     Navigator.pushNamed(context, '/status');
   }
 
-  void goToKontak(BuildContext context) {
+    void goToKontak(BuildContext context) {
     Navigator.pushNamed(context, '/kontak');
+  }
+
+    void logout(BuildContext context) {
+    Navigator.pop(context);
   }
 }
