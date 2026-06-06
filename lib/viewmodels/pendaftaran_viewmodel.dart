@@ -100,6 +100,12 @@ class PendaftaranViewModel extends ChangeNotifier {
       'ktp_ortu_file': prefs.getString('ktp_ortu_file') ?? '',
     };
   }
+
+  Future<String> getNomorPendaftaran() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('no_pendaftaran') ?? '-';
+  }
+
   Future<List<PendaftaranModel>> getAllPendaftaran() async {
     final data = await DatabaseHelper.instance.getAllPendaftaran();
 

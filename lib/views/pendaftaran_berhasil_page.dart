@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../viewmodels/pendaftaran_viewmodel.dart';
 
 class PendaftaranBerhasilPage extends StatefulWidget {
   const PendaftaranBerhasilPage({super.key});
@@ -10,6 +10,7 @@ class PendaftaranBerhasilPage extends StatefulWidget {
 }
 
 class _PendaftaranBerhasilPageState extends State<PendaftaranBerhasilPage> {
+  final PendaftaranViewModel pendaftaranViewModel = PendaftaranViewModel();
   String noPendaftaran = '';
 
   @override
@@ -19,12 +20,14 @@ class _PendaftaranBerhasilPageState extends State<PendaftaranBerhasilPage> {
   }
 
   Future<void> loadData() async {
-    final prefs = await SharedPreferences.getInstance();
+  final nomor = await pendaftaranViewModel.getNomorPendaftaran();
 
-    setState(() {
-      noPendaftaran = prefs.getString('no_pendaftaran') ?? '-';
-    });
-  }
+  if (!mounted) return;
+
+  setState(() {
+    noPendaftaran = nomor;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
