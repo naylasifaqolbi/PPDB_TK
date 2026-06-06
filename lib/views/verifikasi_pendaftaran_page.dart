@@ -343,7 +343,7 @@ class _VerifikasiPendaftaranPageState extends State<VerifikasiPendaftaranPage> {
             ),
 
             SizedBox(
-              height: 65,
+              height: 110,
               width: double.infinity,
 
               child: Stack(

@@ -19,12 +19,148 @@ class DetailDokumenPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: const Color(0xFFEFFAFF),
 
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  Container(color: Colors.black.withOpacity(0.45)),
+            body: Stack(
+              children: [
+                // ======================
+                // BACKGROUND SAMA SEPERTI VERIFIKASI BERHASIL
+                // ======================
+                Column(
+                  children: [
+                    const SizedBox(height: 8),
 
-                  Center(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: Row(
+                        children: [
+                          Image.asset('assets/images/logo.png', width: 38),
+
+                          const SizedBox(width: 8),
+
+                          const Expanded(
+                            child: Text(
+                              'TK Nurul Hidayah',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.notifications,
+                              size: 18,
+                              color: Color(0xFF1D944B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset('assets/images/awan.png', width: 52),
+                        Image.asset('assets/images/awan2.png', width: 52),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 170,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Positioned(
+                            bottom: 0,
+                            child: Image.asset(
+                              'assets/images/padang_hijau.png',
+                              width: MediaQuery.of(context).size.width,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+
+                          Positioned(
+                            right: 20,
+                            bottom: 22,
+                            child: Image.asset(
+                              'assets/images/sekolah.png',
+                              width: 125,
+                            ),
+                          ),
+
+                          Positioned(
+                            left: 20,
+                            bottom: 18,
+                            child: Image.asset(
+                              'assets/images/anak.png',
+                              width: 160,
+                            ),
+                          ),
+
+                          Positioned(
+                            bottom: 0,
+                            child: Image.asset(
+                              'assets/images/pagar_rumput.png',
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    SizedBox(
+                      height: 80,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.asset(
+                              'assets/images/padang_hijau.png',
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+
+                          Positioned(
+                            left: 0,
+                            bottom: 0,
+                            child: Image.asset(
+                              'assets/images/rumput.png',
+                              width: 75,
+                            ),
+                          ),
+
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: Image.asset(
+                              'assets/images/rumput2.png',
+                              width: 75,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                // ======================
+                // OVERLAY GELAP
+                // ======================
+                Container(color: Colors.black.withOpacity(0.45)),
+
+                // ======================
+                // POPUP DETAIL DOKUMEN
+                // ======================
+                SafeArea(
+                  child: Center(
                     child: Container(
                       margin: const EdgeInsets.symmetric(horizontal: 28),
                       padding: const EdgeInsets.all(22),
@@ -110,8 +246,8 @@ class DetailDokumenPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
@@ -119,107 +255,108 @@ class DetailDokumenPage extends StatelessWidget {
     );
   }
 
-  Widget _dokumenItem(BuildContext context, String namaDokumen, String pathFile) {
-  final bool uploaded = pathFile.isNotEmpty;
-  final String namaFile = uploaded
-      ? pathFile.split('/').last.split('\\').last
-      : 'Belum Upload';
+  Widget _dokumenItem(
+    BuildContext context,
+    String namaDokumen,
+    String pathFile,
+  ) {
+    final bool uploaded = pathFile.isNotEmpty;
 
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 12),
-    child: Row(
-      children: [
-        Icon(
-          uploaded ? Icons.check_circle : Icons.cancel,
-          color: uploaded ? Colors.green : Colors.red,
-        ),
+    final String namaFile = uploaded
+        ? pathFile.split('/').last.split('\\').last
+        : 'Belum Upload';
 
-        const SizedBox(width: 10),
-
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                namaDokumen,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-
-              const SizedBox(height: 3),
-
-              Text(
-                namaFile,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(
+            uploaded ? Icons.check_circle : Icons.cancel,
+            color: uploaded ? Colors.green : Colors.red,
           ),
-        ),
 
-        if (uploaded)
-          TextButton(
-            onPressed: () {
-              _showDokumenPreview(context, pathFile);
-            },
-            child: const Text('Buka'),
-          )
-        else
-          const Text(
-            'Belum Upload',
-            style: TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
+          const SizedBox(width: 10),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  namaDokumen,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+
+                const SizedBox(height: 3),
+
+                Text(
+                  namaFile,
+                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+              ],
             ),
           ),
-      ],
-    ),
-  );
-}
 
-void _showDokumenPreview(BuildContext context, String pathFile) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
+          if (uploaded)
+            TextButton(
+              onPressed: () {
+                _showDokumenPreview(context, pathFile);
+              },
+              child: const Text('Buka'),
+            )
+          else
+            const Text(
+              'Belum Upload',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+        ],
+      ),
+    );
+  }
 
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.file(
-                  File(pathFile),
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        'File tidak dapat ditampilkan. Pastikan file berupa gambar dan masih tersedia.',
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
+  void _showDokumenPreview(BuildContext context, String pathFile) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        ),
-      );
-    },
-  );
-}
+
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    File(pathFile),
+                    fit: BoxFit.contain,
+
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          'File tidak dapat ditampilkan. Pastikan file berupa gambar dan masih tersedia.',
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
