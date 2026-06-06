@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'form_orangtua_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/database_helper.dart';
+import 'package:file_picker/file_picker.dart';
 
 class FormPendaftaranPage extends StatefulWidget {
   const FormPendaftaranPage({super.key});
@@ -13,6 +14,10 @@ class FormPendaftaranPage extends StatefulWidget {
 class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
   String gender = 'Laki-laki';
   String? selectedReligion;
+
+  String? kkFile;
+  String? aktaFile;
+  String? fotoFile;
 
   final TextEditingController namaController = TextEditingController();
 
@@ -31,6 +36,26 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
     'Buddha',
     'Konghucu',
   ];
+
+  Future<void> pilihFile(String jenis) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        if (jenis == 'kk') {
+          kkFile = result.files.single.name;
+        }
+
+        if (jenis == 'akta') {
+          aktaFile = result.files.single.name;
+        }
+
+        if (jenis == 'foto') {
+          fotoFile = result.files.single.name;
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -248,15 +273,15 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
 
                       const SizedBox(height: 18),
 
-                      buildUploadBox('Scan Kartu Keluarga (KK)'),
+                      buildUploadBox('Scan Kartu Keluarga (KK)', 'kk', kkFile),
 
                       const SizedBox(height: 16),
 
-                      buildUploadBox('Scan Akta Kelahiran'),
+                      buildUploadBox('Scan Akta Kelahiran', 'akta', aktaFile),
 
                       const SizedBox(height: 16),
 
-                      buildUploadBox('Pas Foto Anak'),
+                      buildUploadBox('Pas Foto Anak', 'foto', fotoFile),
                     ],
                   ),
                 ),
@@ -295,6 +320,17 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('NIK harus 16 digit angka'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (kkFile == null ||
+                              aktaFile == null ||
+                              fotoFile == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Semua dokumen wajib diunggah'),
                               ),
                             );
                             return;
@@ -361,6 +397,12 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                             'agama_anak',
                             selectedReligion ?? '',
                           );
+
+                          await prefs.setString('kk_file', kkFile ?? '');
+
+                          await prefs.setString('akta_file', aktaFile ?? '');
+
+                          await prefs.setString('foto_file', fotoFile ?? '');
 
                           print('Data tersimpan dengan ID: $id');
 
@@ -485,7 +527,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
     );
   }
 
-  Widget buildUploadBox(String title) {
+  Widget buildUploadBox(String title, String jenis, String? namaFile) {
     return Container(
       padding: const EdgeInsets.all(16),
 
@@ -494,27 +536,47 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
         borderRadius: BorderRadius.circular(18),
       ),
 
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+              ),
+
+              ElevatedButton(
+                onPressed: () {
+                  pilihFile(jenis);
+                },
+
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1D944B),
+                ),
+
+                child: const Text(
+                  'Unggah File',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
           ),
 
-          ElevatedButton(
-            onPressed: () {},
-
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1D944B),
+          if (namaFile != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '✓ $namaFile',
+                style: const TextStyle(
+                  color: Colors.green,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-
-            child: const Text(
-              'Unggah File',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
         ],
       ),
     );
