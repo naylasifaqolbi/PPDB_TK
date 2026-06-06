@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../core/database_helper.dart';
+import 'package:provider/provider.dart';
+
+import '../viewmodels/admin_data_pendaftar_viewmodel.dart';
 
 class AdminDataPendaftarPage extends StatefulWidget {
   const AdminDataPendaftarPage({super.key});
@@ -9,26 +11,22 @@ class AdminDataPendaftarPage extends StatefulWidget {
 }
 
 class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
-  List<Map<String, dynamic>> pendaftarList = [];
-
   @override
   void initState() {
     super.initState();
-    loadData();
-  }
 
-  Future<void> loadData() async {
-    final data = await DatabaseHelper.instance.getAllPendaftaran();
-
-    setState(() {
-      pendaftarList = data;
+    Future.microtask(() {
+      context.read<AdminDataPendaftarViewModel>().loadData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<AdminDataPendaftarViewModel>();
+
     return Scaffold(
       backgroundColor: const Color(0xFFEAF8EF),
+
       body: Stack(
         children: [
           // Footer padang hijau
@@ -42,13 +40,16 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
               height: 120,
             ),
           ),
+
           SafeArea(
             child: Column(
               children: [
                 const SizedBox(height: 12),
+
                 // Header logo + judul
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
+
                   child: Row(
                     children: [
                       Image.asset(
@@ -56,7 +57,9 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
                         width: 40,
                         height: 40,
                       ),
+
                       const SizedBox(width: 8),
+
                       const Expanded(
                         child: Text(
                           'DATA PENDAFTAR PPDB',
@@ -67,34 +70,43 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
                           ),
                         ),
                       ),
+
                       const Icon(Icons.notifications, color: Color(0xFF1D944B)),
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 12),
+
                 // Card tabel
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
+
                     child: Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+
                       elevation: 4,
+
                       child: Column(
                         children: [
                           // Header tabel
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFBEEBCF),
-                              borderRadius: const BorderRadius.only(
+
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFBEEBCF),
+
+                              borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(12),
                                 topRight: Radius.circular(12),
                               ),
                             ),
-                            child: Row(
-                              children: const [
+
+                            child: const Row(
+                              children: [
                                 Expanded(
                                   flex: 1,
                                   child: Center(
@@ -106,6 +118,7 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
                                     ),
                                   ),
                                 ),
+
                                 Expanded(
                                   flex: 3,
                                   child: Center(
@@ -117,6 +130,7 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
                                     ),
                                   ),
                                 ),
+
                                 Expanded(
                                   flex: 2,
                                   child: Center(
@@ -131,78 +145,100 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
                               ],
                             ),
                           ),
+
+                          // Loading
+                          if (viewModel.isLoading)
+                            const Expanded(
+                              child: Center(child: CircularProgressIndicator()),
+                            )
                           // List pendaftar
-                          Expanded(
-                            child: ListView.separated(
-                              padding: const EdgeInsets.all(0),
-                              itemCount: pendaftarList.length,
-                              separatorBuilder: (context, index) => Divider(
-                                height: 1,
-                                color: Colors.grey.shade300,
-                              ),
-                              itemBuilder: (context, index) {
-                                final item = pendaftarList[index];
-                                return Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 8,
-                                  ),
-                                  color: index % 2 == 0
-                                      ? Colors.green[50]
-                                      : Colors.white,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: Center(
-                                          child: Text('${index + 1}'),
-                                        ),
-                                      ),
+                          else
+                            Expanded(
+                              child: ListView.separated(
+                                padding: const EdgeInsets.all(0),
 
-                                      Expanded(
-                                        flex: 3,
-                                        child: Center(
-                                          child: Text(item['nama_anak'] ?? ''),
-                                        ),
-                                      ),
+                                itemCount: viewModel.pendaftarList.length,
 
-                                      Expanded(
-                                        flex: 2,
-                                        child: Center(
-                                          child: Text(
-                                            item['no_pendaftaran'] ?? '',
+                                separatorBuilder: (context, index) => Divider(
+                                  height: 1,
+                                  color: Colors.grey.shade300,
+                                ),
+
+                                itemBuilder: (context, index) {
+                                  final item = viewModel.pendaftarList[index];
+
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 8,
+                                    ),
+
+                                    color: index % 2 == 0
+                                        ? Colors.green[50]
+                                        : Colors.white,
+
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Center(
+                                            child: Text('${index + 1}'),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
+
+                                        Expanded(
+                                          flex: 3,
+                                          child: Center(
+                                            child: Text(
+                                              item['nama_anak'] ?? '',
+                                            ),
+                                          ),
+                                        ),
+
+                                        Expanded(
+                                          flex: 2,
+                                          child: Center(
+                                            child: Text(
+                                              item['no_pendaftaran'] ?? '',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 8),
-                // Tombol kembali (lebih kecil)
+
+                // Tombol kembali
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 4,
                   ),
+
                   child: SizedBox(
                     width: double.infinity,
                     height: 42,
+
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF1D944B),
+
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
+
                       child: const Text(
                         'KEMBALI',
                         style: TextStyle(
@@ -213,6 +249,7 @@ class _AdminDataPendaftarPageState extends State<AdminDataPendaftarPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 12),
               ],
             ),
