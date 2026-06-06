@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'konfirmasi_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../core/database_helper.dart';
 import 'package:file_picker/file_picker.dart';
+import '../viewmodels/pendaftaran_viewmodel.dart';
 
 class FormOrangTuaPage extends StatefulWidget {
   final String namaAnak;
@@ -18,14 +17,12 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
   String? kkOrtuFile;
   String? ktpOrtuFile;
 
+  final PendaftaranViewModel pendaftaranViewModel = PendaftaranViewModel();
+
   final TextEditingController namaOrtuController = TextEditingController();
-
   final TextEditingController ttlOrtuController = TextEditingController();
-
   final TextEditingController alamatOrtuController = TextEditingController();
-
   final TextEditingController pekerjaanController = TextEditingController();
-
   final TextEditingController noTlpController = TextEditingController();
 
   final List<String> religions = [
@@ -300,56 +297,19 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
                             return;
                           }
 
-                          // kode lama tetap
-                          final prefs = await SharedPreferences.getInstance();
-
-                          await prefs.setBool('sudah_mendaftar', true);
-
-                          await prefs.setString(
-                            'status',
-                            'Menunggu Verifikasi',
-                          );
-                          await prefs.setString(
-                            'nama_ortu',
-                            namaOrtuController.text,
+                          // Simpan data orang tua melalui ViewModel
+                          await pendaftaranViewModel.simpanDataOrangTua(
+                            namaOrtu: namaOrtuController.text.trim(),
+                            ttlOrtu: ttlOrtuController.text.trim(),
+                            alamatOrtu: alamatOrtuController.text.trim(),
+                            agamaOrtu: selectedReligion ?? '',
+                            pekerjaanOrtu: pekerjaanController.text.trim(),
+                            noTlpOrtu: noTlpController.text.trim(),
+                            kkOrtuFile: kkOrtuFile ?? '',
+                            ktpOrtuFile: ktpOrtuFile ?? '',
                           );
 
-                          await prefs.setString(
-                            'ttl_ortu',
-                            ttlOrtuController.text,
-                          );
-
-                          await prefs.setString(
-                            'alamat_ortu',
-                            alamatOrtuController.text,
-                          );
-
-                          await prefs.setString(
-                            'agama_ortu',
-                            selectedReligion ?? '',
-                          );
-
-                          await prefs.setString(
-                            'pekerjaan_ortu',
-                            pekerjaanController.text,
-                          );
-
-                          await prefs.setString(
-                            'no_tlp_ortu',
-                            noTlpController.text,
-                          );
-
-                          await prefs.setString(
-                            'kk_ortu_file',
-                            kkOrtuFile ?? '',
-                          );
-
-                          await prefs.setString(
-                            'ktp_ortu_file',
-                            ktpOrtuFile ?? '',
-                          );
-
-                          if (!mounted) return;
+                          if (!context.mounted) return;
 
                           Navigator.push(
                             context,

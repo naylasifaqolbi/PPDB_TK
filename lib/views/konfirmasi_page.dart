@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pendaftaran_berhasil_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../viewmodels/pendaftaran_viewmodel.dart';
 
 class KonfirmasiPage extends StatefulWidget {
   const KonfirmasiPage({super.key});
@@ -10,6 +10,7 @@ class KonfirmasiPage extends StatefulWidget {
 }
 
 class _KonfirmasiPageState extends State<KonfirmasiPage> {
+  final PendaftaranViewModel pendaftaranViewModel = PendaftaranViewModel();
   String namaAnak = '';
   String jenisKelamin = '';
   String ttlAnak = '';
@@ -38,31 +39,31 @@ class _KonfirmasiPageState extends State<KonfirmasiPage> {
   }
 
   Future<void> loadData() async {
-    final prefs = await SharedPreferences.getInstance();
+  final data = await pendaftaranViewModel.getDataKonfirmasi();
 
-    setState(() {
-      namaAnak = prefs.getString('nama_anak') ?? '';
-      jenisKelamin = prefs.getString('jenis_kelamin') ?? '';
-      ttlAnak = prefs.getString('ttl_anak') ?? '';
-      nikAnak = prefs.getString('nik_anak') ?? '';
-      alamatAnak = prefs.getString('alamat_anak') ?? '';
-      agamaAnak = prefs.getString('agama_anak') ?? '';
+  setState(() {
+    namaAnak = data['nama_anak'] ?? '';
+    jenisKelamin = data['jenis_kelamin'] ?? '';
+    ttlAnak = data['ttl_anak'] ?? '';
+    nikAnak = data['nik_anak'] ?? '';
+    alamatAnak = data['alamat_anak'] ?? '';
+    agamaAnak = data['agama_anak'] ?? '';
 
-      namaOrtu = prefs.getString('nama_ortu') ?? '';
-      ttlOrtu = prefs.getString('ttl_ortu') ?? '';
-      alamatOrtu = prefs.getString('alamat_ortu') ?? '';
-      agamaOrtu = prefs.getString('agama_ortu') ?? '';
-      pekerjaanOrtu = prefs.getString('pekerjaan_ortu') ?? '';
-      noTlpOrtu = prefs.getString('no_tlp_ortu') ?? '';
+    namaOrtu = data['nama_ortu'] ?? '';
+    ttlOrtu = data['ttl_ortu'] ?? '';
+    alamatOrtu = data['alamat_ortu'] ?? '';
+    agamaOrtu = data['agama_ortu'] ?? '';
+    pekerjaanOrtu = data['pekerjaan_ortu'] ?? '';
+    noTlpOrtu = data['no_tlp_ortu'] ?? '';
 
-      kkFile = prefs.getString('kk_file') ?? '';
-      aktaFile = prefs.getString('akta_file') ?? '';
-      fotoFile = prefs.getString('foto_file') ?? '';
+    kkFile = data['kk_file'] ?? '';
+    aktaFile = data['akta_file'] ?? '';
+    fotoFile = data['foto_file'] ?? '';
 
-      kkOrtuFile = prefs.getString('kk_ortu_file') ?? '';
-      ktpOrtuFile = prefs.getString('ktp_ortu_file') ?? '';
-    });
-  }
+    kkOrtuFile = data['kk_ortu_file'] ?? '';
+    ktpOrtuFile = data['ktp_ortu_file'] ?? '';
+  });
+}
 
   @override
   Widget build(BuildContext context) {

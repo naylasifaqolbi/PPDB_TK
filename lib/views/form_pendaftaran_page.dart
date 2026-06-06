@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'form_orangtua_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../core/database_helper.dart';
+import '../models/pendaftaran_model.dart';
+import '../viewmodels/pendaftaran_viewmodel.dart';
 import 'package:file_picker/file_picker.dart';
 
 class FormPendaftaranPage extends StatefulWidget {
@@ -19,14 +19,12 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
   String? aktaFile;
   String? fotoFile;
 
+  final PendaftaranViewModel pendaftaranViewModel = PendaftaranViewModel();
+
   final TextEditingController namaController = TextEditingController();
-
   final TextEditingController namaPanggilanController = TextEditingController();
-
   final TextEditingController ttlController = TextEditingController();
-
   final TextEditingController nikController = TextEditingController();
-
   final TextEditingController alamatController = TextEditingController();
   final List<String> religions = [
     'Islam',
@@ -307,9 +305,7 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                               selectedReligion == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                  'Mohon lengkapi seluruh data siswa',
-                                ),
+                                content: Text('Mohon lengkapi seluruh data siswa'),
                               ),
                             );
                             return;
@@ -336,83 +332,52 @@ class _FormPendaftaranPageState extends State<FormPendaftaranPage> {
                             return;
                           }
 
-                          // kode lama tetap
-                          final prefs = await SharedPreferences.getInstance();
+                          // kode tetap
+                          final noPendaftaran = 
+                            await pendaftaranViewModel.buatNomorPendaftaran();
 
-                          int nomorUrut = prefs.getInt('nomor_urut') ?? 0;
-
-                          nomorUrut++;
-
-                          await prefs.setInt('nomor_urut', nomorUrut);
-
-                          final noPendaftaran =
-                              'PPDB-2026-${nomorUrut.toString().padLeft(3, '0')}';
-                          final data = {
-                            'no_pendaftaran': noPendaftaran,
-                            'nama_anak': namaController.text,
-                            'nama_panggilan': namaPanggilanController.text,
-                            'jenis_kelamin': gender,
-                            'ttl_anak': ttlController.text,
-                            'nik_anak': nikController.text,
-                            'alamat_anak': alamatController.text,
-                            'agama_anak': selectedReligion ?? '',
-                            'nama_ortu': '',
-                            'ttl_ortu': '',
-                            'alamat_ortu': '',
-                            'agama_ortu': '',
-                            'pekerjaan_ortu': '',
-                            'status': 'Menunggu Verifikasi',
-                          };
-
-                          final id = await DatabaseHelper.instance
-                              .insertPendaftaran(data);
-
-                          await prefs.setString(
-                            'no_pendaftaran',
-                            noPendaftaran,
+                          final pendaftaran = PendaftaranModel(
+                            namaAnak: namaController.text.trim(),
+                            namaPanggilan: namaPanggilanController.text.trim(),
+                            jenisKelamin: gender,
+                            ttlAnak: ttlController.text.trim(),
+                            nikAnak: nikController.text.trim(),
+                            alamatAnak: alamatController.text.trim(),
+                            agamaAnak: selectedReligion ?? '',
+                            namaOrtu: '',
+                            ttlOrtu: '',
+                            alamatOrtu: '',
+                            agamaOrtu: '',
+                            pekerjaanOrtu: '',
+                            nomorPendaftaran: noPendaftaran,
+                            status: 'Menunggu Verifikasi',
                           );
 
-                          await prefs.setString(
-                            'nama_anak',
-                            namaController.text,
+                          final id = await pendaftaranViewModel.simpanDataAnak(pendaftaran);
+
+                          await pendaftaranViewModel.simpanDataSementaraAnak(
+                            nomorPendaftaran: noPendaftaran,
+                            namaAnak: namaController.text.trim(),
+                            namaPanggilan: namaPanggilanController.text.trim(),
+                            jenisKelamin: gender,
+                            ttlAnak: ttlController.text.trim(),
+                            nikAnak: nikController.text.trim(),
+                            alamatAnak: alamatController.text.trim(),
+                            agamaAnak: selectedReligion ?? '',
+                            kkFile: kkFile ?? '',
+                            aktaFile: aktaFile ?? '',
+                            fotoFile: fotoFile ?? '',
                           );
 
-                          await prefs.setString(
-                            'nama_panggilan',
-                            namaPanggilanController.text,
-                          );
+                          debugPrint('Data tersimpan dengan ID: $id');
 
-                          await prefs.setString('jenis_kelamin', gender);
-
-                          await prefs.setString('ttl_anak', ttlController.text);
-
-                          await prefs.setString('nik_anak', nikController.text);
-
-                          await prefs.setString(
-                            'alamat_anak',
-                            alamatController.text,
-                          );
-
-                          await prefs.setString(
-                            'agama_anak',
-                            selectedReligion ?? '',
-                          );
-
-                          await prefs.setString('kk_file', kkFile ?? '');
-
-                          await prefs.setString('akta_file', aktaFile ?? '');
-
-                          await prefs.setString('foto_file', fotoFile ?? '');
-
-                          print('Data tersimpan dengan ID: $id');
-
-                          if (!mounted) return;
+                          if (!context.mounted) return;
 
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => FormOrangTuaPage(
-                                namaAnak: namaController.text,
+                                namaAnak: namaController.text.trim(),
                               ),
                             ),
                           );
