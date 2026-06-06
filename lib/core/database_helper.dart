@@ -9,9 +9,7 @@ class DatabaseHelper {
   DatabaseHelper._init();
 
   Future<Database> get database async {
-    if (_database != null) {
-      return _database!;
-    }
+    if (_database != null) return _database!;
 
     _database = await _initDB('ppdb.db');
     return _database!;
@@ -21,13 +19,16 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 2, onCreate: _createDB);
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _createDB,
+      onUpgrade: _onUpgrade,
+    );
   }
 
   Future<void> _createDB(Database db, int version) async {
-    // ==========================
-    // TABLE USERS (LOGIN)
-    // ==========================
+    // TABLE USERS
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,9 +38,7 @@ class DatabaseHelper {
       )
     ''');
 
-    // ==========================
-    // TABLE PENDAFTARAN PPDB
-    // ==========================
+    // TABLE PENDAFTARAN
     await db.execute('''
       CREATE TABLE pendaftaran (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,10 +60,21 @@ class DatabaseHelper {
     ''');
   }
 
-  // =====================================================
-  // REGISTER USER
-  // =====================================================
+  // DIPANGGIL SAAT VERSION NAIK
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT UNIQUE,
+          phone TEXT,
+          password TEXT
+        )
+      ''');
+    }
+  }
 
+  // REGISTER USER
   Future<int> registerUser(Map<String, dynamic> user) async {
     final db = await database;
 
@@ -75,10 +85,7 @@ class DatabaseHelper {
     );
   }
 
-  // =====================================================
   // LOGIN USER
-  // =====================================================
-
   Future<Map<String, dynamic>?> loginUser(String email, String password) async {
     final db = await database;
 
@@ -95,10 +102,7 @@ class DatabaseHelper {
     return null;
   }
 
-  // =====================================================
-  // CHECK EMAIL SUDAH ADA
-  // =====================================================
-
+  // CHECK EMAIL
   Future<bool> emailExists(String email) async {
     final db = await database;
 
@@ -111,20 +115,14 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
-  // =====================================================
-  // INSERT DATA PENDAFTARAN
-  // =====================================================
-
+  // INSERT PENDAFTARAN
   Future<int> insertPendaftaran(Map<String, dynamic> row) async {
     final db = await database;
 
     return await db.insert('pendaftaran', row);
   }
 
-  // =====================================================
-  // UPDATE STATUS PENDAFTARAN
-  // =====================================================
-
+  // UPDATE STATUS
   Future<int> updateStatus(String noPendaftaran, String status) async {
     final db = await database;
 
@@ -136,10 +134,7 @@ class DatabaseHelper {
     );
   }
 
-  // =====================================================
-  // GET DATA BERDASARKAN NOMOR PENDAFTARAN
-  // =====================================================
-
+  // GET BERDASARKAN NOMOR
   Future<List<Map<String, dynamic>>> getPendaftaranByNo(
     String noPendaftaran,
   ) async {
@@ -152,10 +147,7 @@ class DatabaseHelper {
     );
   }
 
-  // =====================================================
   // GET SEMUA PENDAFTAR
-  // =====================================================
-
   Future<List<Map<String, dynamic>>> getAllPendaftaran() async {
     final db = await database;
 
