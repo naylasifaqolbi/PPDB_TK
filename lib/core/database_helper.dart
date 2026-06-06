@@ -21,20 +21,16 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
   }
 
-  // =====================================================
   // CREATE DATABASE
-  // =====================================================
-
   Future<void> _createDB(Database db, int version) async {
-    // ==========================
-    // TABLE USERS
-    // ==========================
+
+    // TABEL USERS
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,9 +40,7 @@ class DatabaseHelper {
       )
     ''');
 
-    // ==========================
-    // TABLE ADMIN
-    // ==========================
+    // TABEL ADMIN
     await db.execute('''
       CREATE TABLE admin (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,34 +55,35 @@ class DatabaseHelper {
       'password': 'admin123',
     });
 
-    // ==========================
     // TABLE PENDAFTARAN
-    // ==========================
     await db.execute('''
-      CREATE TABLE pendaftaran (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        no_pendaftaran TEXT,
-        nama_anak TEXT,
-        nama_panggilan TEXT,
-        jenis_kelamin TEXT,
-        ttl_anak TEXT,
-        nik_anak TEXT,
-        alamat_anak TEXT,
-        agama_anak TEXT,
-        nama_ortu TEXT,
-        ttl_ortu TEXT,
-        alamat_ortu TEXT,
-        agama_ortu TEXT,
-        pekerjaan_ortu TEXT,
-        status TEXT
-      )
-    ''');
+    CREATE TABLE pendaftaran (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      no_pendaftaran TEXT,
+      nama_anak TEXT,
+      nama_panggilan TEXT,
+      jenis_kelamin TEXT,
+      ttl_anak TEXT,
+      nik_anak TEXT,
+      alamat_anak TEXT,
+      agama_anak TEXT,
+      nama_ortu TEXT,
+      ttl_ortu TEXT,
+      alamat_ortu TEXT,
+      agama_ortu TEXT,
+      pekerjaan_ortu TEXT,
+      no_tlp_ortu TEXT,
+      kk_file TEXT,
+      akta_file TEXT,
+      foto_file TEXT,
+      kk_ortu_file TEXT,
+      ktp_ortu_file TEXT,
+      status TEXT
+    )
+  ''');
   }
 
-  // =====================================================
   // DATABASE UPGRADE
-  // =====================================================
-
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     // VERSION 2
     if (oldVersion < 2) {
@@ -112,7 +107,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // INSERT ADMIN DEFAULT
       final adminCheck = await db.query('admin');
 
       if (adminCheck.isEmpty) {
@@ -122,12 +116,19 @@ class DatabaseHelper {
         });
       }
     }
+
+    // VERSION 4 (DOKUMEN PENDAFTARAN)
+    if (oldVersion < 4) {
+      await db.execute("ALTER TABLE pendaftaran ADD COLUMN no_tlp_ortu TEXT");
+      await db.execute("ALTER TABLE pendaftaran ADD COLUMN kk_file TEXT");
+      await db.execute("ALTER TABLE pendaftaran ADD COLUMN akta_file TEXT");
+      await db.execute("ALTER TABLE pendaftaran ADD COLUMN foto_file TEXT");
+      await db.execute("ALTER TABLE pendaftaran ADD COLUMN kk_ortu_file TEXT");
+      await db.execute("ALTER TABLE pendaftaran ADD COLUMN ktp_ortu_file TEXT");
+    }
   }
 
-  // =====================================================
   // REGISTER USER
-  // =====================================================
-
   Future<int> registerUser(Map<String, dynamic> user) async {
     final db = await database;
 
@@ -138,10 +139,7 @@ class DatabaseHelper {
     );
   }
 
-  // =====================================================
   // LOGIN USER
-  // =====================================================
-
   Future<Map<String, dynamic>?> loginUser(String email, String password) async {
     final db = await database;
 
@@ -158,10 +156,7 @@ class DatabaseHelper {
     return null;
   }
 
-  // =====================================================
   // LOGIN ADMIN
-  // =====================================================
-
   Future<Map<String, dynamic>?> loginAdmin(
     String email,
     String password,
@@ -181,10 +176,7 @@ class DatabaseHelper {
     return null;
   }
 
-  // =====================================================
   // CHECK EMAIL USER
-  // =====================================================
-
   Future<bool> emailExists(String email) async {
     final db = await database;
 
@@ -197,20 +189,44 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
-  // =====================================================
   // INSERT PENDAFTARAN
-  // =====================================================
-
   Future<int> insertPendaftaran(Map<String, dynamic> row) async {
     final db = await database;
 
     return await db.insert('pendaftaran', row);
   }
 
-  // =====================================================
-  // UPDATE STATUS
-  // =====================================================
+  Future<int> updateDataOrangTua({
+    required String noPendaftaran,
+    required String namaOrtu,
+    required String ttlOrtu,
+    required String alamatOrtu,
+    required String agamaOrtu,
+    required String pekerjaanOrtu,
+    required String noTlpOrtu,
+    required String kkOrtuFile,
+    required String ktpOrtuFile,
+  }) async {
+    final db = await database;
 
+    return await db.update(
+      'pendaftaran',
+      {
+        'nama_ortu': namaOrtu,
+        'ttl_ortu': ttlOrtu,
+        'alamat_ortu': alamatOrtu,
+        'agama_ortu': agamaOrtu,
+        'pekerjaan_ortu': pekerjaanOrtu,
+        'no_tlp_ortu': noTlpOrtu,
+        'kk_ortu_file': kkOrtuFile,
+        'ktp_ortu_file': ktpOrtuFile,
+      },
+      where: 'no_pendaftaran = ?',
+      whereArgs: [noPendaftaran],
+    );
+  }
+
+  // UPDATE STATUS
   Future<int> updateStatus(String noPendaftaran, String status) async {
     final db = await database;
 
@@ -222,10 +238,7 @@ class DatabaseHelper {
     );
   }
 
-  // =====================================================
   // GET BERDASARKAN NOMOR
-  // =====================================================
-
   Future<List<Map<String, dynamic>>> getPendaftaranByNo(
     String noPendaftaran,
   ) async {
@@ -238,10 +251,7 @@ class DatabaseHelper {
     );
   }
 
-  // =====================================================
   // GET SEMUA PENDAFTAR
-  // =====================================================
-
   Future<List<Map<String, dynamic>>> getAllPendaftaran() async {
     final db = await database;
 

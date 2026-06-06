@@ -5,12 +5,30 @@ class DetailDokumenViewModel extends ChangeNotifier {
 
   DetailDokumenViewModel(this.dataAnak);
 
-  String get namaAnak => dataAnak['nama'] ?? '-';
+  String get namaAnak => dataAnak['nama_anak']?.toString() ?? '-';
 
-  List<Map<String, dynamic>> get dokumenList => [
-    {'nama': 'Akta Kelahiran', 'uploaded': true},
-    {'nama': 'Kartu Keluarga', 'uploaded': true},
-    {'nama': 'Foto Anak', 'uploaded': false},
-    {'nama': 'KTP Orang Tua', 'uploaded': true},
-  ];
+  List<Map<String, dynamic>> get dokumenList {
+    return [
+      {
+        'nama': 'Kartu Keluarga Anak',
+        'path': dataAnak['kk_file']?.toString() ?? '',
+      },
+      {
+        'nama': 'Akta Kelahiran',
+        'path': dataAnak['akta_file']?.toString() ?? '',
+      },
+      {
+        'nama': 'Pas Foto Anak',
+        'path': dataAnak['foto_file']?.toString() ?? '',
+      },
+      {
+        'nama': 'Kartu Keluarga Orang Tua',
+        'path': dataAnak['kk_ortu_file']?.toString() ?? '',
+      },
+      {
+        'nama': 'KTP Orang Tua',
+        'path': dataAnak['ktp_ortu_file']?.toString() ?? '',
+      },
+    ];
+  }
 }

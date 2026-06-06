@@ -62,6 +62,8 @@ class PendaftaranViewModel extends ChangeNotifier {
   }) async {
     final prefs = await SharedPreferences.getInstance();
 
+    final noPendaftaran = prefs.getString('no_pendaftaran') ?? '';
+
     await prefs.setBool('sudah_mendaftar', true);
     await prefs.setString('status', 'Menunggu Verifikasi');
     await prefs.setString('nama_ortu', namaOrtu);
@@ -72,9 +74,23 @@ class PendaftaranViewModel extends ChangeNotifier {
     await prefs.setString('no_tlp_ortu', noTlpOrtu);
     await prefs.setString('kk_ortu_file', kkOrtuFile);
     await prefs.setString('ktp_ortu_file', ktpOrtuFile);
+
+    if (noPendaftaran.isNotEmpty) {
+      await DatabaseHelper.instance.updateDataOrangTua(
+        noPendaftaran: noPendaftaran,
+        namaOrtu: namaOrtu,
+        ttlOrtu: ttlOrtu,
+        alamatOrtu: alamatOrtu,
+        agamaOrtu: agamaOrtu,
+        pekerjaanOrtu: pekerjaanOrtu,
+        noTlpOrtu: noTlpOrtu,
+        kkOrtuFile: kkOrtuFile,
+        ktpOrtuFile: ktpOrtuFile,
+      );
+    }
   }
 
-  Future<Map<String, String>> getDataKonfirmasi() async {
+    Future<Map<String, String>> getDataKonfirmasi() async {
     final prefs = await SharedPreferences.getInstance();
 
     return {
@@ -100,7 +116,7 @@ class PendaftaranViewModel extends ChangeNotifier {
       'ktp_ortu_file': prefs.getString('ktp_ortu_file') ?? '',
     };
   }
-
+  
   Future<String> getNomorPendaftaran() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('no_pendaftaran') ?? '-';

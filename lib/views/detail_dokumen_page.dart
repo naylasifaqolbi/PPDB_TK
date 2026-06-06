@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/detail_dokumen_viewmodel.dart';
@@ -71,8 +73,9 @@ class DetailDokumenPage extends StatelessWidget {
 
                                 ...vm.dokumenList.map(
                                   (dokumen) => _dokumenItem(
-                                    dokumen['nama'],
-                                    dokumen['uploaded'],
+                                    context,
+                                    dokumen['nama'] ?? '',
+                                    dokumen['path'] ?? '',
                                   ),
                                 ),
                               ],
@@ -116,30 +119,107 @@ class DetailDokumenPage extends StatelessWidget {
     );
   }
 
-  Widget _dokumenItem(String namaDokumen, bool uploaded) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+  Widget _dokumenItem(BuildContext context, String namaDokumen, String pathFile) {
+  final bool uploaded = pathFile.isNotEmpty;
+  final String namaFile = uploaded
+      ? pathFile.split('/').last.split('\\').last
+      : 'Belum Upload';
 
-      child: Row(
-        children: [
-          Icon(
-            uploaded ? Icons.check_circle : Icons.cancel,
-            color: uploaded ? Colors.green : Colors.red,
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: Row(
+      children: [
+        Icon(
+          uploaded ? Icons.check_circle : Icons.cancel,
+          color: uploaded ? Colors.green : Colors.red,
+        ),
+
+        const SizedBox(width: 10),
+
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                namaDokumen,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+
+              const SizedBox(height: 3),
+
+              Text(
+                namaFile,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.black54,
+                ),
+              ),
+            ],
           ),
+        ),
 
-          const SizedBox(width: 10),
-
-          Expanded(child: Text(namaDokumen)),
-
-          Text(
-            uploaded ? 'Sudah Upload' : 'Belum Upload',
+        if (uploaded)
+          TextButton(
+            onPressed: () {
+              _showDokumenPreview(context, pathFile);
+            },
+            child: const Text('Buka'),
+          )
+        else
+          const Text(
+            'Belum Upload',
             style: TextStyle(
-              color: uploaded ? Colors.green : Colors.red,
+              color: Colors.red,
               fontWeight: FontWeight.bold,
             ),
           ),
-        ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
+
+void _showDokumenPreview(BuildContext context, String pathFile) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.file(
+                  File(pathFile),
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
+                        'File tidak dapat ditampilkan. Pastikan file berupa gambar dan masih tersedia.',
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 }

@@ -40,11 +40,11 @@ class _FormOrangTuaPageState extends State<FormOrangTuaPage> {
     if (result != null) {
       setState(() {
         if (jenis == 'kk') {
-          kkOrtuFile = result.files.single.name;
+          kkOrtuFile = result.files.single.path;
         }
 
         if (jenis == 'ktp') {
-          ktpOrtuFile = result.files.single.name;
+          ktpOrtuFile = result.files.single.path;
         }
       });
     }
