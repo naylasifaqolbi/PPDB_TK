@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'package:provider/provider.dart';
 
-class RegisterPage extends StatefulWidget {
+import '../viewmodels/register_viewmodel.dart';
+
+class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
-  @override
   Widget build(BuildContext context) {
+    final emailController = TextEditingController();
+
+    final phoneController = TextEditingController();
+
+    final passwordController = TextEditingController();
+
+    final confirmPasswordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -20,7 +25,6 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               const SizedBox(height: 20),
 
-              // Judul
               const Text(
                 'PPDB TK NURUL HIDAYAH',
                 textAlign: TextAlign.center,
@@ -33,13 +37,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 15),
 
-              // Area ilustrasi
               SizedBox(
                 height: 220,
                 child: Stack(
                   alignment: Alignment.bottomCenter,
+
                   children: [
-                    // Padang hijau
                     Positioned(
                       bottom: 0,
                       child: Image.asset(
@@ -49,7 +52,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
 
-                    // Anak bahagia
                     Positioned(
                       bottom: 10,
                       child: Image.asset(
@@ -63,12 +65,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 28),
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
 
-                    // Judul form
+                  children: [
                     const Text(
                       'Registrasi Akun',
                       style: TextStyle(
@@ -79,197 +80,54 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     const SizedBox(height: 28),
 
-                    // EMAIL
-                    const Text(
-                      'Email',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    const Text('Email'),
 
-                    const SizedBox(height: 8),
-
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'emailanda@mail.com',
-
-                        filled: true,
-                        fillColor: const Color(0xFFF5F5F5),
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
+                    TextField(controller: emailController),
 
                     const SizedBox(height: 22),
 
-                    // NOMOR TELEPON
-                    const Text(
-                      'Nomor Telepon',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    const Text('Nomor Telepon'),
 
-                    const SizedBox(height: 8),
-
-                    Row(
-                      children: [
-                        // Dropdown kode negara
-                        Container(
-                          width: 90,
-                          height: 58,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF5F5F5),
-
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: '+62',
-
-                              items: const [
-                                DropdownMenuItem(
-                                  value: '+62',
-                                  child: Text('+62'),
-                                ),
-                              ],
-
-                              onChanged: (value) {},
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(width: 10),
-
-                        // Nomor telepon
-                        Expanded(
-                          child: TextField(
-                            keyboardType: TextInputType.phone,
-
-                            decoration: InputDecoration(
-                              hintText: '000 0000 0000',
-
-                              filled: true,
-                              fillColor: const Color(0xFFF5F5F5),
-
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    TextField(controller: phoneController),
 
                     const SizedBox(height: 22),
 
-                    // PASSWORD
-                    const Text(
-                      'Kata Sandi',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
+                    const Text('Kata Sandi'),
 
                     TextField(
+                      controller: passwordController,
                       obscureText: true,
-
-                      decoration: InputDecoration(
-                        hintText: 'Kata Sandi Anda',
-
-                        filled: true,
-                        fillColor: const Color(0xFFF5F5F5),
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
                     ),
 
                     const SizedBox(height: 22),
 
-                    // KONFIRMASI PASSWORD
-                    const Text(
-                      'Konfirmasi Kata Sandi',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
+                    const Text('Konfirmasi Kata Sandi'),
 
                     TextField(
+                      controller: confirmPasswordController,
                       obscureText: true,
-
-                      decoration: InputDecoration(
-                        hintText: 'Kata Sandi Anda',
-
-                        filled: true,
-                        fillColor: const Color(0xFFF5F5F5),
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
                     ),
 
                     const SizedBox(height: 30),
 
-                    // Tombol daftar
                     SizedBox(
                       width: double.infinity,
                       height: 56,
+
                       child: ElevatedButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Registrasi berhasil. Silakan login.'),
-                            ),
-                          );
-
-                          Navigator.pushReplacement(
+                          context.read<RegisterViewModel>().register(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
+                            emailController.text,
+                            phoneController.text,
+                            passwordController.text,
+                            confirmPasswordController.text,
                           );
                         },
 
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1D944B),
-
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-
-                        child: const Text(
-                          'Daftar Akun',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                        child: const Text('Daftar Akun'),
                       ),
                     ),
-
-                    const SizedBox(height: 30),
                   ],
                 ),
               ),

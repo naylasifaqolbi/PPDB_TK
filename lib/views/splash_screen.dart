@@ -1,6 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'landing_page.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/splash_viewmodel.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,12 +14,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // Pindah otomatis ke landing page setelah 10 detik
-    Timer(const Duration(seconds: 10), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LandingPage()),
-      );
+    Future.microtask(() {
+      context.read<SplashViewModel>().startSplash(context);
     });
   }
 
@@ -30,17 +26,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
       body: Stack(
         children: [
-          // Tengah layar
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Logo TK
                 Image.asset('assets/images/logo.png', width: 180, height: 180),
 
                 const SizedBox(height: 15),
 
-                // Nama aplikasi
                 const Text(
                   'NH SMART PPDB',
                   style: TextStyle(
@@ -53,20 +46,17 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
 
-          // Bagian bawah
           Align(
             alignment: Alignment.bottomCenter,
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                // Lahan hijau
                 Image.asset(
                   'assets/images/padang_hijau.png',
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
 
-                // Anak bahagia
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Image.asset(
