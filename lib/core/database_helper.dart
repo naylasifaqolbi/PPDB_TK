@@ -21,14 +21,20 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
   }
 
+  // =====================================================
+  // CREATE DATABASE
+  // =====================================================
+
   Future<void> _createDB(Database db, int version) async {
+    // ==========================
     // TABLE USERS
+    // ==========================
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +44,26 @@ class DatabaseHelper {
       )
     ''');
 
+    // ==========================
+    // TABLE ADMIN
+    // ==========================
+    await db.execute('''
+      CREATE TABLE admin (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE,
+        password TEXT
+      )
+    ''');
+
+    // ADMIN DEFAULT
+    await db.insert('admin', {
+      'email': 'admin@gmail.com',
+      'password': 'admin123',
+    });
+
+    // ==========================
     // TABLE PENDAFTARAN
+    // ==========================
     await db.execute('''
       CREATE TABLE pendaftaran (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,8 +85,12 @@ class DatabaseHelper {
     ''');
   }
 
-  // DIPANGGIL SAAT VERSION NAIK
+  // =====================================================
+  // DATABASE UPGRADE
+  // =====================================================
+
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // VERSION 2
     if (oldVersion < 2) {
       await db.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -72,9 +101,33 @@ class DatabaseHelper {
         )
       ''');
     }
+
+    // VERSION 3 (ADMIN)
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS admin (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT UNIQUE,
+          password TEXT
+        )
+      ''');
+
+      // INSERT ADMIN DEFAULT
+      final adminCheck = await db.query('admin');
+
+      if (adminCheck.isEmpty) {
+        await db.insert('admin', {
+          'email': 'admin@gmail.com',
+          'password': 'admin123',
+        });
+      }
+    }
   }
 
+  // =====================================================
   // REGISTER USER
+  // =====================================================
+
   Future<int> registerUser(Map<String, dynamic> user) async {
     final db = await database;
 
@@ -85,7 +138,10 @@ class DatabaseHelper {
     );
   }
 
+  // =====================================================
   // LOGIN USER
+  // =====================================================
+
   Future<Map<String, dynamic>?> loginUser(String email, String password) async {
     final db = await database;
 
@@ -102,7 +158,33 @@ class DatabaseHelper {
     return null;
   }
 
-  // CHECK EMAIL
+  // =====================================================
+  // LOGIN ADMIN
+  // =====================================================
+
+  Future<Map<String, dynamic>?> loginAdmin(
+    String email,
+    String password,
+  ) async {
+    final db = await database;
+
+    final result = await db.query(
+      'admin',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, password],
+    );
+
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+
+    return null;
+  }
+
+  // =====================================================
+  // CHECK EMAIL USER
+  // =====================================================
+
   Future<bool> emailExists(String email) async {
     final db = await database;
 
@@ -115,14 +197,20 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
+  // =====================================================
   // INSERT PENDAFTARAN
+  // =====================================================
+
   Future<int> insertPendaftaran(Map<String, dynamic> row) async {
     final db = await database;
 
     return await db.insert('pendaftaran', row);
   }
 
+  // =====================================================
   // UPDATE STATUS
+  // =====================================================
+
   Future<int> updateStatus(String noPendaftaran, String status) async {
     final db = await database;
 
@@ -134,7 +222,10 @@ class DatabaseHelper {
     );
   }
 
+  // =====================================================
   // GET BERDASARKAN NOMOR
+  // =====================================================
+
   Future<List<Map<String, dynamic>>> getPendaftaranByNo(
     String noPendaftaran,
   ) async {
@@ -147,7 +238,10 @@ class DatabaseHelper {
     );
   }
 
+  // =====================================================
   // GET SEMUA PENDAFTAR
+  // =====================================================
+
   Future<List<Map<String, dynamic>>> getAllPendaftaran() async {
     final db = await database;
 

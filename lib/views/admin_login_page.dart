@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'admin_home_page.dart';
+import 'package:provider/provider.dart';
+import '../viewmodels/admin_login_viewmodel.dart';
 
 class AdminLoginPage extends StatefulWidget {
   const AdminLoginPage({super.key});
@@ -13,11 +14,17 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
   final TextEditingController passwordController = TextEditingController();
 
-  bool isRememberMe = false;
-  bool isPasswordHidden = true;
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AdminLoginViewModel>(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFFEFFAFF),
 
@@ -60,6 +67,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Container(
                   padding: const EdgeInsets.all(22),
+
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
@@ -84,7 +92,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
                       const SizedBox(height: 24),
 
-                      // Email
+                      // EMAIL
                       const Text(
                         'Email',
                         style: TextStyle(fontWeight: FontWeight.w600),
@@ -108,7 +116,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
                       const SizedBox(height: 18),
 
-                      // Password
+                      // PASSWORD
                       const Text(
                         'Kata Sandi',
                         style: TextStyle(fontWeight: FontWeight.w600),
@@ -118,7 +126,8 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
                       TextField(
                         controller: passwordController,
-                        obscureText: isPasswordHidden,
+                        obscureText: vm.isPasswordHidden,
+
                         decoration: InputDecoration(
                           hintText: 'Kata Sandi Anda',
                           filled: true,
@@ -127,15 +136,15 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                             borderRadius: BorderRadius.circular(16),
                             borderSide: BorderSide.none,
                           ),
+
                           prefixIcon: const Icon(Icons.lock),
+
                           suffixIcon: IconButton(
                             onPressed: () {
-                              setState(() {
-                                isPasswordHidden = !isPasswordHidden;
-                              });
+                              vm.togglePasswordVisibility();
                             },
                             icon: Icon(
-                              isPasswordHidden
+                              vm.isPasswordHidden
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                             ),
@@ -145,16 +154,14 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
                       const SizedBox(height: 12),
 
-                      // Remember me
+                      // REMEMBER ME
                       Row(
                         children: [
                           Checkbox(
-                            value: isRememberMe,
+                            value: vm.isRememberMe,
                             activeColor: const Color(0xFF1D944B),
                             onChanged: (value) {
-                              setState(() {
-                                isRememberMe = value ?? false;
-                              });
+                              vm.toggleRememberMe(value ?? false);
                             },
                           ),
 
@@ -164,19 +171,21 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
                       const SizedBox(height: 12),
 
-                      // Button login
+                      // BUTTON LOGIN
                       SizedBox(
                         width: double.infinity,
                         height: 52,
+
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AdminHomePage(),
-                              ),
-                            );
-                          },
+                          onPressed: vm.isLoading
+                              ? null
+                              : () {
+                                  vm.loginAdmin(
+                                    context,
+                                    emailController.text.trim(),
+                                    passwordController.text.trim(),
+                                  );
+                                },
 
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF1D944B),
@@ -186,14 +195,18 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                             ),
                           ),
 
-                          child: const Text(
-                            'Masuk',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: vm.isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  'Masuk',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -203,7 +216,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
 
               const SizedBox(height: 40),
 
-              // Footer
+              // FOOTER
               SizedBox(
                 height: 100,
                 child: Stack(

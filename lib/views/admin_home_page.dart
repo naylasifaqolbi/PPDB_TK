@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'admin_data_pendaftar_page.dart';
-import 'verifikasi_pendaftaran_page.dart';
-import 'lihat_dokumen_page.dart';
+import 'package:provider/provider.dart';
+
+import '../viewmodels/admin_home_viewmodel.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AdminHomeViewModel>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -28,7 +30,7 @@ class AdminHomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              vm.logout(context);
             },
             icon: const Icon(Icons.logout, color: Color(0xFF1D944B)),
           ),
@@ -98,7 +100,6 @@ class AdminHomePage extends StatelessWidget {
 
                 decoration: BoxDecoration(
                   color: const Color(0xFFEAF8EF),
-
                   borderRadius: BorderRadius.circular(20),
                 ),
 
@@ -138,11 +139,13 @@ class AdminHomePage extends StatelessWidget {
                 children: [
                   Transform.translate(
                     offset: const Offset(-8, 0),
+
                     child: Image.asset('assets/images/awan.png', width: 90),
                   ),
 
                   Transform.translate(
                     offset: const Offset(8, 0),
+
                     child: Image.asset('assets/images/awan2.png', width: 90),
                   ),
                 ],
@@ -216,18 +219,14 @@ class AdminHomePage extends StatelessWidget {
               child: Column(
                 children: [
                   _menuButton(
-                  context,
-                  title: 'Lihat Data Pendaftar',
-                  icon: Icons.people_alt_rounded,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AdminDataPendaftarPage(),
-                      ),
-                    );
-                  },
-                ),
+                    context,
+                    title: 'Lihat Data Pendaftar',
+                    icon: Icons.people_alt_rounded,
+                    onTap: () {
+                      vm.goToDataPendaftar(context);
+                    },
+                  ),
+
                   const SizedBox(height: 16),
 
                   _menuButton(
@@ -235,13 +234,7 @@ class AdminHomePage extends StatelessWidget {
                     title: 'Verifikasi Pendaftaran',
                     icon: Icons.verified_user,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const VerifikasiPendaftaranPage(),
-                        ),
-                      );
+                      vm.goToVerifikasi(context);
                     },
                   ),
 
@@ -252,12 +245,7 @@ class AdminHomePage extends StatelessWidget {
                     title: 'Lihat Dokumen',
                     icon: Icons.folder_copy_rounded,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LihatDokumenPage(),
-                        ),
-                      );
+                      vm.goToDokumen(context);
                     },
                   ),
 
