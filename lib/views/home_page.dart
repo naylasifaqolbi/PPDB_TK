@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/home_viewmodel.dart';
-import 'register_page.dart';
-import 'form_pendaftaran_page.dart';
-import 'jadwal_page.dart';
-import 'lokasi_page.dart';
-import 'kontak_page.dart';
 
 class HomePage extends StatelessWidget {
   final bool isGuest;

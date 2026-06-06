@@ -378,6 +378,11 @@ class FileItem extends StatelessWidget {
 
   const FileItem({super.key, required this.fileName});
 
+  String get displayName {
+    if (fileName.isEmpty) return '-';
+    return fileName.split('/').last.split('\\').last;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -385,10 +390,10 @@ class FileItem extends StatelessWidget {
       child: Row(
         children: [
           const Icon(Icons.check_circle, color: Colors.green, size: 18),
-
           const SizedBox(width: 8),
-
-          Expanded(child: Text(fileName, style: const TextStyle(fontSize: 13))),
+          Expanded(
+            child: Text(displayName,
+            style: const TextStyle(fontSize: 13))),
         ],
       ),
     );
